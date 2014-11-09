@@ -1,0 +1,179 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+    /*font-family: 'Bitter', serif;*/
+
+    background-color: #f4cbc9;
+    background-image: linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
+    background-image: -o-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
+    background-image: -moz-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(87, 87, 87)), color-stop(0.50, rgb(121, 121, 121)), color-stop(1, rgb(229, 229, 229)));
+    background-image: -webkit-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
+    background-image: -ms-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ab99b4', endColorstr='#f4cbc9');
+    background-attachment: fixed;
+    min-height: 100%;
+}
+
+.header {
+    font-size: xx-large;
+    text-align: center;
+
+}
+
+.menu {
+    font-size: large;
+    text-align: center;
+
+}
+
+.explainBoxes {
+    margin: 30px;
+}
+
+.info {
+    text-align: center;
+    width: 200px;
+    height: 100px;
+    border-style: solid;
+    padding: 10px;
+}
+
+.vacation {
+    background: red;
+}
+
+.course {
+    background: blue;
+}
+
+.parental {
+    background: orange;
+}
+
+.none {
+    background: white;
+}
+
+.box {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 30px;
+}
+
+.wizard
+{
+    font-size: large;
+    padding: 10px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.ui-datepicker-week-end {
+    display: none
+}
+
+.actionBox {
+    border: 2px solid;
+    border-radius: 25px;
+    border-style: solid;
+    border-color: #aaaaaa;
+    width: 600px;
+    height: 350px;
+
+    text-align: center;
+    margin: 2cm auto;
+    text-align: left;
+
+    /* mozila code */
+    background-image: -moz-linear-gradient(left, right, from(#A1D004), to(#6B9A00));
+
+    /* webkit code */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #A1D004), color-stop(1.00, #6B9A00));
+
+    /* IE code - note GradientType=0 means vertical */
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled='true', startColorstr=#A1D004, endColorstr=#6B9A00, GradientType=0);
+
+}
+
+select
+{
+    border-radius: 30px;
+    padding: 0.2em 0.2em;
+}
+input
+{
+    border-radius: 30px;
+    padding: 0.2em 0.2em;
+
+}
+button
+{
+    border-radius: 30px;
+    padding: 0.2em 0.2em;
+}
+
+.table-wrapper {
+    /*overflow-x:scroll;*/
+    /*overflow-y:visible;*/
+    width:90%;
+    /*margin-left: 120px;*/
+}
+
+.mt table
+{
+    table-layout: fixed;
+
+}
+.mt th
+{
+    height: 40px;
+}
+.mt td
+{
+    vertical-align: text-bottom;
+    height: 30px;
+
+}
+
+/*.mt th:first-child {*/
+    /*position: fixed;*/
+    /*left: 5px*/
+/*}*/
+/*.mt td:first-child {*/
+    /*position: fixed;*/
+    /*left: 5px*/
+/*}*/
+
+.fixedcell
+{
+    height: 30px;
+    width: 70px;
+
+}
+
+/* unvisited link */
+a:link {
+    color: #f8f8f8;
+}
+
+/* visited link */
+a:visited {
+    color: #F8F8F8;
+}
+
+/* mouse over link */
+a:hover {
+    color: #F8F8F8;
+}
+
+/* selected link */
+a:active {
+    color: #F8F8F8;
+}
