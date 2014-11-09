@@ -24,13 +24,13 @@ class DbHelper
         return mysqli_real_escape_string($con,$toEscape);
     }
 
-    static function sw_mysqli_fetch_all($mysqli_result) {
-        $resultAsArray = array();
-        while ($row = mysqli_fetch_assoc($mysqli_result)) {
-            $resultAsArray[]=$row;
-        }
-        return $resultAsArray;
-    }
+//    static function sw_mysqli_fetch_all($mysqli_result) {
+//        $resultAsArray = array();
+//        while ($row = mysqli_fetch_assoc($mysqli_result)) {
+//            $resultAsArray[]=$row;
+//        }
+//        return $resultAsArray;
+//    }
 
 
 

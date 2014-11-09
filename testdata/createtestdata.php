@@ -35,11 +35,10 @@ class createtestdata
 
     }
 
-    pr
+
 
     private function createTestEvents()
     {
-        print_r($this->userNames);
         $stateArray = array();
         $stateArray[] = "vacation";
         $stateArray[] = "course";
@@ -58,6 +57,7 @@ class createtestdata
                 $state = $stateArray[rand(0, count($stateArray) - 1)];
                 $user = $this->userNames[rand(0, count($this->userNames) - 1)];
                 $result = $this->insertOneDayToDbMocker($user, $aDate->format("Ymd"), $state);
+                echo "Created event ".$user." ".$aDate->format("Ymd")." ".$state."\n";
             }
         }
     }
@@ -87,6 +87,7 @@ class createtestdata
             if ($result == false) {
                 $this->log->addError('could not execute sql: ' . $sql);
             }
+            echo "Created manager ".$name."\n";
         }
     }
 
@@ -104,15 +105,15 @@ class createtestdata
             $id = $managecount + $i;
 
             $this->createOneUser($id, $uName, $name, $team, $manager);
+            echo "Created user ".$name."\n";
 
         }
-    }
 
+    }
 
     private function createOneUser($id, $username, $fullname, $team, $manager)
     {
         $this->userNames[] = $username;
-        echo "$username <br>";
         $sql = "INSERT
                 INTO
                     users

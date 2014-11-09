@@ -1,0 +1,1 @@
+phpunit  --coverage-html=coverage --testdox-html testresult.html . | tee testresult.txt
