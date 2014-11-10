@@ -85,7 +85,7 @@ while ($rowUser = mysqli_fetch_array($resultUser, MYSQLI_ASSOC)) {
 echo '</tr>';
 echo '</table>';
 echo '</div>';
-echo '<div>Possible get parameters to use on this page:<br>from=YYYY-MM-DD<br>range=n%20[day|week|month|year]<br>e.g: from=2014-01-01&range=1%20year</div>';
+echo '<div class="infobottom">Possible get parameters to use on this page:<br>from=YYYY-MM-DD<br>range=n%20[day|week|month|year]<br>e.g: from=2014-01-01&range=1%20year</div>';
 HtmlIncludes::footer();
 
 /**

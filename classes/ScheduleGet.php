@@ -59,6 +59,9 @@ class ScheduleGet
             case 'parental':
                 $color = 'orange';
                 break;
+            default:
+                $color = 'white';
+
         }
         return $color;
     }

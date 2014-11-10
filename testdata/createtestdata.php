@@ -6,7 +6,7 @@ require '../classes/DateHelper.php';
 require '../settings.inc';
 
 $c = new createtestdata();
-$c->createTestData(10, 100);
+$c->createTestData(5, 10);
 
 
 class createtestdata
@@ -29,9 +29,15 @@ class createtestdata
 
     public function createTestData($managecount, $userCount)
     {
+        echo 'Truncate all database tables';
+        mysqli_query($this->con,'truncate table users;');
+        mysqli_query($this->con,'truncate table teams;');
+        mysqli_query($this->con,'truncate table mangers;');
+        mysqli_query($this->con,'truncate table events;');
         $this->createManager($managecount);
         $this->createUsers($userCount, $managecount);
         $this->createTestEvents();
+        $this->createOneUser(9999, 'testuser', 'Surname Lastname', '', '1');
 
     }
 

@@ -49,6 +49,7 @@ function eventClick(date,obj)
     var parental_rgb = 'rgb(255, 165, 0)';
     var none = 'white';
     var none_rgb = 'rgba(0, 0, 0, 0)';
+    var none_rgb_transparent = 'transparent';
     var none_rgb_white = 'rgb(255, 255, 255)';
     var none_rgb_current_date = 'rgb(252, 248, 227)';
     var rgb = obj.css('background-color');
@@ -57,6 +58,7 @@ function eventClick(date,obj)
         case none_rgb:
         case none_rgb_white:
         case none_rgb_current_date:
+        case none_rgb_transparent:
             obj.css('background-color', vacation);
             var state = "vacation";
             break;

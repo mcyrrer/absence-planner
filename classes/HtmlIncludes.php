@@ -13,7 +13,6 @@ class HtmlIncludes
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="http://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="js/fullcalendar-2.1.1/fullcalendar.css"/>
     <link rel="stylesheet" href="vacation.css"/>
     <link rel="stylesheet" href="js/jquery-ui-1.11.2/jquery-ui.min.css"/>

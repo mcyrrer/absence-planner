@@ -20,7 +20,7 @@ class Logging
     public function getLogger()
     {
         $log = new Monolog\Logger('name');
-        $log->pushHandler(new Monolog\Handler\StreamHandler(LOGFILE, Monolog\Logger::WARNING));
+        $log->pushHandler(new Monolog\Handler\StreamHandler(LOGFILE, Monolog\Logger::DEBUG));
         return $log;
     }
 

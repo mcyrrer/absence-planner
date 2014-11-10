@@ -38,7 +38,17 @@ body {
 
 .info {
     text-align: center;
+    border-radius: 10px;
     width: 200px;
+    height: 100px;
+    border-style: solid;
+    padding: 10px;
+}
+
+.infobottom {
+    text-align: center;
+    border-radius: 10px;
+    width: 400px;
     height: 100px;
     border-style: solid;
     padding: 10px;
@@ -90,32 +100,38 @@ body {
     text-align: center;
     margin: 2cm auto;
     text-align: left;
+    /*background-image: linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);*/
+    background-image: linear-gradient( 0deg, rgb(127, 245, 0) 0%, rgb(29, 201, 24) 50%, rgb(19, 150, 18) 100%);
+    /*background-image: linear-gradient(left, right, from(#A1D004), to(#6B9A00));*/
 
-    /* mozila code */
-    background-image: -moz-linear-gradient(left, right, from(#A1D004), to(#6B9A00));
 
-    /* webkit code */
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #A1D004), color-stop(1.00, #6B9A00));
+     /*mozila code*/
+    /*background-image: -moz-linear-gradient(left, right, from(#A1D004), to(#6B9A00));*/
 
-    /* IE code - note GradientType=0 means vertical */
-    filter: progid:DXImageTransform.Microsoft.gradient(enabled='true', startColorstr=#A1D004, endColorstr=#6B9A00, GradientType=0);
+     /*webkit code*/
+    /*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #A1D004), color-stop(1.00, #6B9A00));*/
+
+     /*IE code - note GradientType=0 means vertical*/
+    /*filter: progid:DXImageTransform.Microsoft.gradient(enabled='true', startColorstr=#A1D004, endColorstr=#6B9A00, GradientType=0);*/
 
 }
 
 select
 {
-    border-radius: 30px;
+    border-radius: 10px;
     padding: 0.2em 0.2em;
 }
 input
 {
-    border-radius: 30px;
+    border-radius: 10px;
+
     padding: 0.2em 0.2em;
 
 }
 button
 {
-    border-radius: 30px;
+    border-radius: 10px;
+
     padding: 0.2em 0.2em;
 }
 
@@ -130,26 +146,39 @@ button
 {
     table-layout: fixed;
 
+
 }
 .mt th
 {
-    height: 40px;
+    /*height: 40px;*/
+    white-space: nowrap;
+    border-style: groove;
+    border-width: 0.5px;
+    border-radius: 10px;
+
 }
 .mt td
 {
     vertical-align: text-bottom;
-    height: 30px;
+    /*height: 30px;*/
+    white-space: nowrap;
+    border-style: groove;
+    border-width: 0.5px;
+    border-radius: 10px;
 
 }
 
-/*.mt th:first-child {*/
+.mt th:first-child {
+    width: 100px;
     /*position: fixed;*/
     /*left: 5px*/
-/*}*/
-/*.mt td:first-child {*/
+}
+.mt td:first-child {
+    width: 100px;
+
     /*position: fixed;*/
     /*left: 5px*/
-/*}*/
+}
 
 .fixedcell
 {
