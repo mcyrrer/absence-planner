@@ -12,6 +12,7 @@ HtmlIncludes::header();
 
 
 <div class="box">
+    
     <h2>Day by day entry</h2>
 
     <div class="explainBoxes">
