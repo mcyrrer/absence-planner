@@ -7,9 +7,10 @@ define('DB_PASS', '');
 define('DB_NAME', 'vacation');
 
 
-define('LOGFILE', $_ENV["TRAVIS_BUILD_DIR"].'\application.log');
-define('LOGFILEUNITTEST', $_ENV["TRAVIS_BUILD_DIR"].'\unittest\unittest.log');
-define('BASEPATH', $_ENV["TRAVIS_BUILD_DIR"]);
+//define('LOGFILE', $_ENV["TRAVIS_BUILD_DIR"].'\application.log');
+define('LOGFILE', '/home/travis/build/mcyrrer/absence-planner/application.log');
+define('LOGFILEUNITTEST', '/home/travis/build/mcyrrer/absence-planner/unittest/unittest.log');
+define('BASEPATH', '/home/travis/build/mcyrrer/absence-planner');
 
 define('WWWLOCATION', 'http://127.0.0.1/vacation');
 
