@@ -8,6 +8,7 @@
  */
 require_once '../vendor/autoload.php';
 require_once '../settings.inc';
+require_once BASEPATH.'/classes/Logging.php';
 require_once 'src/setupData.php';
 require_once 'src/Http_Executor.php';
 
@@ -17,9 +18,13 @@ class ApiScheduleGet extends PHPUnit_Framework_TestCase
     protected static $dbh;
     protected static $username;
     protected static $response;
+    protected static $logger;
+
 
     public static function setUpBeforeClass()
     {
+        $l = new Logging();
+        self::$logger = $l->getLoggerTest();
         self::$dbh = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $sd = new setupData();
         self::$username = $sd->insertScheduleToDb(self::$dbh);
@@ -39,12 +44,15 @@ class ApiScheduleGet extends PHPUnit_Framework_TestCase
     {
 
         $scheduleArray = json_decode(self::$response, true);
+
         $this->assertJson(self::$response);
     }
 
     public function testApiScheduleGetHasCorrectNumberOfRecords()
     {
+
         $scheduleArray = json_decode(self::$response, true);
+        //self::$logger->addDebug(self::$response,array(__CLASS__,__FUNCTION__,__FILE__,__LINE__));
         $this->assertCount(3, $scheduleArray);
     }
 

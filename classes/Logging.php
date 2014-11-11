@@ -1,5 +1,5 @@
 <?php
-require_once BASEPATH.'/vendor/autoload.php';
+require_once BASEPATH . '/vendor/autoload.php';
 
 
 /**
@@ -21,6 +21,17 @@ class Logging
     {
         $log = new Monolog\Logger('name');
         $log->pushHandler(new Monolog\Handler\StreamHandler(LOGFILE, Monolog\Logger::DEBUG));
+        return $log;
+    }
+
+    /**
+     * Creates a Monolog logger
+     * @return \Monolog\Logger
+     */
+    public function getLoggerTest()
+    {
+        $log = new Monolog\Logger('name');
+        $log->pushHandler(new Monolog\Handler\StreamHandler(LOGFILEUNITTEST, Monolog\Logger::DEBUG));
         return $log;
     }
 

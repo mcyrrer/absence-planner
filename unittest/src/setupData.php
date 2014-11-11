@@ -12,6 +12,8 @@ class setupData
     public function insertScheduleToDb($dbh)
     {
        $username = self::generateRandomString(4);
+        $sql = "DELETE FROM events WHERE user='".$username."'";
+        mysqli_query($dbh, $sql);
         $sql = "INSERT
                  INTO
                     events
