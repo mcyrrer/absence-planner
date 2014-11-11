@@ -1,1 +1,1 @@
-phpunit  --coverage-html=coverage --testdox-html testresult.html . | tee testresult.txt
+phpunit --coverage-text --coverage-html==coverage --color -c vacation_test.xml --testsuite main | tee testresult.txt

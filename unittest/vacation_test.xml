@@ -1,0 +1,21 @@
+<phpunit>
+    <testsuites>
+        <testsuite name="main">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <testsuites>
+        <testsuite name="travis">
+            <directory>tests</directory>
+            <exclude>tests/api</exclude>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../classes</directory>
+        </whitelist>
+    </filter>
+
+</phpunit>
