@@ -1,3 +1,3 @@
 absence-planner
 ===============
-[![Latest Version](https://travis-ci.org/mcyrrer/absence-planner)](https://api.travis-ci.org/mcyrrer/absence-planner.svg)
+[![Latest Version](https://api.travis-ci.org/mcyrrer/absence-planner.svg)](https://travis-ci.org/mcyrrer/absence-planner)
