@@ -23,7 +23,9 @@ class DbHelperTest extends PHPUnit_Framework_TestCase {
         $con = $dbm->connectToMainDb();
         $stringToBeEscaped = 'TestString'.PHP_EOL.'TestString';
         $escapedString = $dbm->escape($con,$stringToBeEscaped);
-        $this->assertEquals('TestString\r\nTestString',$escapedString);
+
+//        $this->assertEquals('TestString\r\nTestString',$escapedString);
+        $this->assertEquals('TestString\nTestString',$escapedString);
     }
 
 }
