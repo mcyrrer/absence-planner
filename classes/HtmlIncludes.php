@@ -7,6 +7,7 @@ class HtmlIncludes
     {
     }
 
+// @codeCoverageIgnoreStart
     public static function header()
     {
         echo '
@@ -35,12 +36,14 @@ class HtmlIncludes
 
     public static function footer()
     {
-    echo '
+        echo '
     </body>
 
 </html>
 ';
     }
+    // @codeCoverageIgnoreEnd
+
 }
 
 ?>

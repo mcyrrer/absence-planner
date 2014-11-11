@@ -28,13 +28,14 @@ class Logging
      * Creates a Monolog logger
      * @return \Monolog\Logger
      */
+    // @codeCoverageIgnoreStart
     public function getLoggerTest()
     {
         $log = new Monolog\Logger('name');
         $log->pushHandler(new Monolog\Handler\StreamHandler(LOGFILEUNITTEST, Monolog\Logger::DEBUG));
         return $log;
     }
-
+// @codeCoverageIgnoreEnd
 
 }
 
