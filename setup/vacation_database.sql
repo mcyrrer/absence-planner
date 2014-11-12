@@ -24,16 +24,19 @@ USE `vacation`;
 DROP TABLE IF EXISTS `events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `events` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
-  `eventDate` date NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uniquIndex` (`type`,`user`,`eventDate`),
-  KEY `Date` (`user`,`eventDate`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE
+  events
+(
+  id INT NOT NULL AUTO_INCREMENT,
+  type VARCHAR(45) NOT NULL,
+  USER VARCHAR(45) NOT NULL,
+  eventDate DATE NOT NULL,
+  approved INT DEFAULT '0' NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT uniquIndex UNIQUE (type, USER, eventDate),
+  INDEX DATE (USER, eventDate)
+)
+  ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `events`

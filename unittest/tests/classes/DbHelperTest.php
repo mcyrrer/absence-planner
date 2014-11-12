@@ -25,8 +25,6 @@ class DbHelperTest extends PHPUnit_Framework_TestCase
         $stringToBeEscaped = 'TestString' . PHP_EOL . 'TestString';
         $escapedString = $dbm->escape($con, $stringToBeEscaped);
 
-//        $this->assertEquals('TestString\r\nTestString',$escapedString);
-        echo PHP_OS;
         if (strcmp(PHP_OS, "Linux")==0)
             $this->assertEquals('TestString\nTestString', $escapedString);
         elseif (strcmp(PHP_OS, "WINNT")==0)

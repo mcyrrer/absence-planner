@@ -28,7 +28,6 @@ class ScheduleGetTest extends PHPUnit_Framework_TestCase {
     {
         $sql="DELETE FROM events WHERE user=".self::$username;
         mysqli_query(self::$dbh,$sql);
-
         mysqli_close(self::$dbh);
     }
 

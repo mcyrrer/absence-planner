@@ -741,8 +741,8 @@
     },
     {
         "name": "phpunit/phpunit",
-        "version": "4.3.x-dev",
-        "version_normalized": "4.3.9999999.9999999-dev",
+        "version": "4.3.5",
+        "version_normalized": "4.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/sebastianbergmann/phpunit.git",

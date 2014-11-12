@@ -29,7 +29,6 @@ class ApiScheduleGet extends PHPUnit_Framework_TestCase
         $sd = new setupData();
         self::$username = $sd->insertScheduleToDb(self::$dbh);
         self::$response = Http_Executor::http_get(WWWLOCATION . '/api/schedule/get/index.php?user=' . self::$username);
-
     }
 
     public static function tearDownAfterClass()
@@ -61,7 +60,7 @@ class ApiScheduleGet extends PHPUnit_Framework_TestCase
     {
         $scheduleArray = json_decode(self::$response, true);
         foreach ($scheduleArray as $aSchedule) {
-            $this->assertCount(7, $aSchedule);
+            $this->assertCount(8, $aSchedule);
         }
     }
 
@@ -73,9 +72,11 @@ class ApiScheduleGet extends PHPUnit_Framework_TestCase
             $this->assertArrayHasKey('title', $aSchedule);
             $this->assertArrayHasKey('id', $aSchedule);
             $this->assertArrayHasKey('user', $aSchedule);
+            $this->assertArrayHasKey('manager', $aSchedule);
             $this->assertArrayHasKey('start', $aSchedule);
             $this->assertArrayHasKey('end', $aSchedule);
             $this->assertArrayHasKey('backgroundColor', $aSchedule);
+            $this->assertArrayHasKey('approvalStatus', $aSchedule);
         }
     }
 

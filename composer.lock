@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "57f8634f075f276c549988db3803fed9",
+    "hash": "e675a7b2a53fd323398e4213646761c1",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -352,7 +352,7 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.3.x-dev",
+            "version": "4.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",

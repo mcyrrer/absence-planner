@@ -1,9 +1,9 @@
 <?php
-require '../vendor/autoload.php';
-require '../classes/HtmlIncludes.php';
-require '../classes/DbHelper.php';
-require '../classes/DateHelper.php';
-require '../settings.inc';
+require '../../vendor/autoload.php';
+require '../../classes/HtmlIncludes.php';
+require '../../classes/DbHelper.php';
+require '../../classes/DateHelper.php';
+require '../../settings.inc';
 
 $c = new createtestdata();
 $c->createTestData(5, 10);
@@ -15,6 +15,8 @@ class createtestdata
     var $dbM;
     var $con;
     var $userNames;
+    protected static $managerArray;
+
 
     function __construct()
     {
@@ -59,7 +61,7 @@ class createtestdata
         $daterange = new DatePeriod($begin, $interval, $end);
 
         foreach ($daterange as $aDate) {
-            for ($i = 0; $i < 5; $i++) {
+            for ($i = 0; $i < 1; $i++) {
                 $state = $stateArray[rand(0, count($stateArray) - 1)];
                 $user = $this->userNames[rand(0, count($this->userNames) - 1)];
                 $result = $this->insertOneDayToDbMocker($user, $aDate->format("Ymd"), $state);
@@ -76,7 +78,7 @@ class createtestdata
             $name = $sName . ' ' . $lName;
             $uName = $this->generateRandomString(4);
             $this->createOneUser($i, $uName, $name, 'Mangers', '-');
-
+            self::$managerArray[] = $uName;
             $sql = "INSERT
                 INTO
                     mangers
@@ -86,14 +88,14 @@ class createtestdata
                     )
                     VALUES
                     (
-                        '" . $i . "',
+                        '" . $uName . "',
                         1
                     )";
             $result = mysqli_query($this->con, $sql);
             if ($result == false) {
                 $this->log->addError('could not execute sql: ' . $sql);
             }
-            echo "Created manager ".$name."\n";
+            echo "Created manager ".$uName."\n";
         }
     }
 
@@ -106,9 +108,12 @@ class createtestdata
             $lName = $this->generateRandomString(rand(5, 10));
             $name = $sName . ' ' . $lName;
             $uName = $this->generateRandomString(4);
-            $manager = rand(0, $managecount - 1);
+            $managerID = rand(0, count(self::$managerArray)-1);
+            $manager = self::$managerArray[$managerID];
+
+            echo "Manager : ".$manager;
             $team = "A-team";
-            $id = $managecount + $i;
+            $id = $i +100;
 
             $this->createOneUser($id, $uName, $name, $team, $manager);
             echo "Created user ".$name."\n";

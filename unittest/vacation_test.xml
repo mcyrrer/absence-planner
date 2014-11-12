@@ -1,6 +1,6 @@
 <phpunit>
     <testsuites>
-        <testsuite name="main">
+        <testsuite name="all">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
@@ -9,6 +9,12 @@
         <testsuite name="travis">
             <directory>tests</directory>
             <exclude>tests/api</exclude>
+        </testsuite>
+    </testsuites>
+
+    <testsuites>
+        <testsuite name="dev">
+            <file>tests/classes/ApprovalGetTest.php</file>
         </testsuite>
     </testsuites>
 
