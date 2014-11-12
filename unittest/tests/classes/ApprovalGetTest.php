@@ -1,7 +1,7 @@
 <?php
 require_once '../settings.inc';
 require_once BASEPATH . '/vendor/autoload.php';
-require_once BASEPATH . '../classes/ApprovalGet.php';
+require_once BASEPATH . '/classes/ApprovalGet.php';
 require_once BASEPATH . '/unittest/src/setupData.php';
 
 /**

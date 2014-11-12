@@ -29,12 +29,12 @@ CREATE TABLE
 (
   id INT NOT NULL AUTO_INCREMENT,
   type VARCHAR(45) NOT NULL,
-  USER VARCHAR(45) NOT NULL,
+  user VARCHAR(45) NOT NULL,
   eventDate DATE NOT NULL,
   approved INT DEFAULT '0' NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT uniquIndex UNIQUE (type, USER, eventDate),
-  INDEX DATE (USER, eventDate)
+  CONSTRAINT uniquIndex UNIQUE (type, user, eventDate),
+  INDEX DATE (user, eventDate)
 )
   ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
