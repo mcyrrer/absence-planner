@@ -9,15 +9,15 @@ $(document).ready(function () {
         aspectRatio: 4,
         events: 'api/schedule/get/index.php',
         dayClick: function (date, jsEvent, view) {
-            eventClick(date,$(this));
+            eventClick(date, $(this));
         },
-        eventClick: function(calEvent, jsEvent, view) {
+        eventClick: function (calEvent, jsEvent, view) {
             var date = calEvent.start;
-            eventClick(date,$(this));
+            eventClick(date, $(this));
         }
     })
 
-    $('#addToCalendar').click(function() {
+    $('#addToCalendar').click(function () {
         var from = $('#from').val();
         var to = $('#to').val();
         var state = $('#type').val();
@@ -37,10 +37,26 @@ $(document).ready(function () {
         });
     });
 
+    $('#test').click(function () {
+        $.ajax({
+            url: "api/overview/get/index.php",
+            cache: false
+        })
+            .done(function (html) {
+                $("#tblr").html(html);
+                $('#myTable01').fixedHeaderTable({ footer: true,
+                    cloneHeadToFoot: true,
+                    altClass: 'odd',
+                    autoShow: false,
+                    fixedColumns: 3
+                });
+            });
+    });
+
+
 });
 
-function eventClick(date,obj)
-{
+function eventClick(date, obj) {
     var vacation = 'red';
     var vacation_rgb = 'rgb(255, 0, 0)';
     var course = 'blue';
@@ -91,28 +107,27 @@ function eventClick(date,obj)
 }
 
 
-function datePickerInit()
-{
-    $( "#from" ).datepicker({
+function datePickerInit() {
+    $("#from").datepicker({
 //        defaultDate: "+1w",
         changeMonth: true,
         numberOfMonths: 1,
         showWeek: true,
         firstDay: 1,
         dateFormat: "yy-mm-dd",
-        onClose: function( selectedDate ) {
-            $( "#to" ).datepicker( "option", "minDate", selectedDate );
+        onClose: function (selectedDate) {
+            $("#to").datepicker("option", "minDate", selectedDate);
         }
     });
-    $( "#to" ).datepicker({
+    $("#to").datepicker({
 //        defaultDate: "+1w",
         changeMonth: true,
         numberOfMonths: 1,
         showWeek: true,
         firstDay: 1,
         dateFormat: "yy-mm-dd",
-        onClose: function( selectedDate ) {
-            $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+        onClose: function (selectedDate) {
+            $("#from").datepicker("option", "maxDate", selectedDate);
         }
     });
 }

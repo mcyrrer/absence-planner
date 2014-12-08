@@ -54,6 +54,10 @@ body {
     padding: 10px;
 }
 
+.thItem {
+    background: #ffffff;
+}
+
 .vacation {
     background: red;
 }

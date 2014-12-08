@@ -23,6 +23,11 @@ class HtmlIncludes
     <script src="js/fullcalendar-2.1.1/fullcalendar.min.js"></script>
     <script src="js/vacation.js"></script>
 
+    <link href="js/Fixed-Header-Table/demo/css/960.css" rel="stylesheet" media="screen" />
+    <link href="js/Fixed-Header-Table/css/defaultTheme.css" rel="stylesheet" media="screen" />
+    <link href="js/Fixed-Header-Table/demo/css/myTheme.css" rel="stylesheet" media="screen" />
+    <script src="js/Fixed-Header-Table/jquery.fixedheadertable.js"></script>
+
     <meta charset="UTF-8">
     <title>Vacation sheet</title>
 </head>
