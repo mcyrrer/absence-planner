@@ -9,28 +9,79 @@ $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::W
 HtmlIncludes::header();
 ?>
 
-<script>
-    $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
 
-        $.ajax({
-            url: "api/overview/get/index.php",
-            cache: false
-        })
-            .done(function (html) {
-                $("#tblr").html(html);
-                $('#myTable01').fixedHeaderTable({ footer: true,
-                    cloneHeadToFoot: true,
-                    altClass: 'odd',
-                    autoShow: true,
-                    fixedColumns: 3
+            $.ajax({
+                url: "api/overview/get/index.php?json",
+                cache: false
+            })
+                .done(function (data) {
+                    var tableHtml = generateOverviewTable(data);
+
+                    $("#tblr").html(tableHtml);
+                    $('#myTable01').fixedHeaderTable({ footer: true,
+                        cloneHeadToFoot: true,
+                        altClass: 'odd',
+                        autoShow: true,
+                        fixedColumns: 3
+                    });
+                    $('#myTable01').fixedHeaderTable('show');
+
                 });
-                $('#myTable01').fixedHeaderTable('show');
+        });
 
+        function generateOverviewTable(scheduleJson) {
+            var html = "";
+            var structure = $.parseJSON(scheduleJson);
+            var dates = structure['dates'];
+            var schedules = structure['schedules'];
+            html += '<table class="fancyTable" id="myTable01">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th class="thItem">AName</th>';
+            html += '<th class="thItem">Team</th>';
+            html += '<th class="thItem">Manager</th>';
+            $.each(dates, function (index, value) {
+                html += '<th>' + value + '</th>';
             });
-    });
+            html += '</thead>';
+            html += '<tbody>';
+            $.each(schedules, function (key, value) {
+
+                html += '<tr>';
+                html += '<td class="thItem">' + value['fullname'] + '</td>';
+                html += '<td class="thItem">' + value['team'] + '</td>';
+                html += '<td class="thItem">' + value['manager'] + '</td>';
+                $.each(dates, function (index, day) {
+                    var schedule = value['schedule'];
+                    var d = schedule.hasOwnProperty(day);
+                    if (schedule.hasOwnProperty(day)) {
+                        var scheduleDay = value['schedule'][day];
+                        var type = scheduleDay['type'];
+                        var approved = scheduleDay['approved'];
+                        if (approved == 1)
+                            var status = "OK";
+                        else
+                            var status = "";
+                        var id = scheduleDay['id'];
+                        html += '<td class="' + type + '">' + status + '</td>';
+                    }
+                    else {
+                        html += '<td></td>';
+                    }
+                });
+
+                html += '</tr>';
+            });
+
+            html += '</tbody>';
+            html += '</table>';
+            return html;
+        }
 
 
-</script>
+    </script>
 
     <div class="box">
 

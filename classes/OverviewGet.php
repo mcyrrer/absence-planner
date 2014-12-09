@@ -76,7 +76,15 @@ class OverviewGet
             $user['schedule'] = $this->iterateAllDaysInViewJson($daterange, $useSchedule);
             $userScheduleInformation[$user['fullname']] = $user;
         }
-        return json_encode($userScheduleInformation, JSON_PRETTY_PRINT);
+        $scheduleIncDateRange['dates'] = $dates;
+        $scheduleIncDateRange['schedules'] = $userScheduleInformation;
+        if (version_compare(phpversion(), '5.3.10', '<')) {
+            return json_encode($scheduleIncDateRange);
+        }
+        else
+        {
+            return json_encode($scheduleIncDateRange, JSON_PRETTY_PRINT);
+        }
     }
 
     private function getOverviewViewHTML($dbM, $con, $begin, $end)
@@ -142,9 +150,10 @@ class OverviewGet
                     if (in_array($aDate->format("Y-m-d"), $aDay)) {
                         $day = array();
                         $day['type']=$aDay['type'];
+                        $day['date']=$aDate->format("Y m d");
                         $day['approved']=$aDay['approved'];
                         $day['id']=$aDay['id'];
-                        $userSchedule[$aDate->format("Y-m-d")] = $day;
+                        $userSchedule[$aDate->format("Y m d")] = $day;
                     }
                 }
             }
