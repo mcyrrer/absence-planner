@@ -24,7 +24,7 @@ HtmlIncludes::header();
                     autoShow: true,
                     fixedColumns: 3
                 });
-                $('#myTable01').fixedHeaderTable('show', 1000);
+                $('#myTable01').fixedHeaderTable('show');
 
             });
     });

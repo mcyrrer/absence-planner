@@ -24,13 +24,6 @@ class OverviewGet
         $dbM = new DbHelper();
         $con = $dbM->connectToMainDb();
 
-        echo '<table class="fancyTable" id="myTable01">';
-        echo '<thead>';
-        echo '<tr>';
-        echo '<th class="thItem">AName</th>';
-        echo '<th class="thItem">Team</th>';
-        echo '<th class="thItem">Manager</th>';
-
         if (isset($_REQUEST['from'])) {
             $from = $dbM::escape($con, $_REQUEST['from']);
         } else {
@@ -46,12 +39,62 @@ class OverviewGet
         } else {
             $end = $end->modify('+2 month');
         }
+
+        if (isset($_REQUEST['json'])) {
+            return $this->getOverviewViewJson($dbM, $con, $begin, $end);
+        } else {
+            $this->getOverviewViewHTML($dbM, $con, $begin, $end);
+        }
+    }
+
+
+    private function getOverviewViewJson($dbM, $con, $begin, $end)
+    {
+        $interval = new DateInterval('P1D');
+        $daterange = new DatePeriod($begin, $interval, $end);
+
+        $dates = array();
+        $userScheduleInformation = array();
+
+
+        foreach ($daterange as $aDate) {
+            if (DateHelper::isWeekend($aDate->format("Y-m-d")) == false) {
+                $dates[] = $aDate->format("Y m d");
+            }
+        }
+
+        $resultUser = $this->getAllUsers($con);
+
+        while ($rowUser = mysqli_fetch_array($resultUser, MYSQLI_ASSOC)) {
+            $user = array();
+            $useSchedule = $this->getUserScheduleFromDb($rowUser, $begin, $end, $con);
+
+            $user['fullname'] = $rowUser['fullname'];
+            $user['team'] = $rowUser['team'];
+            $user['manager'] = $rowUser['manager'];
+            $user['id'] = $rowUser['id'];
+            $user['schedule'] = $this->iterateAllDaysInViewJson($daterange, $useSchedule);
+            $userScheduleInformation[$user['fullname']] = $user;
+        }
+        return json_encode($userScheduleInformation, JSON_PRETTY_PRINT);
+    }
+
+    private function getOverviewViewHTML($dbM, $con, $begin, $end)
+    {
+        echo '<table class="fancyTable" id="myTable01">';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th class="thItem">AName</th>';
+        echo '<th class="thItem">Team</th>';
+        echo '<th class="thItem">Manager</th>';
+
+
         $interval = new DateInterval('P1D');
         $daterange = new DatePeriod($begin, $interval, $end);
 
         foreach ($daterange as $aDate) {
             if (DateHelper::isWeekend($aDate->format("Y-m-d")) == false) {
-                echo '<th>' . $aDate->format("Y m d") . "</th>";
+                echo '<th>' . $aDate->format("\wW Y m d") . "</th>";
             }
         }
 
@@ -64,18 +107,16 @@ class OverviewGet
         echo '<tbody>';
 
 
-        $sqlUser = 'SELECT * FROM users';
-        $resultUser = mysqli_query($con, $sqlUser);
-
+        $resultUser = $this->getAllUsers($con);
 
         while ($rowUser = mysqli_fetch_array($resultUser, MYSQLI_ASSOC)) {
             $useSchedule = $this->getUserScheduleFromDb($rowUser, $begin, $end, $con);
 
             echo '<tr>';
-            echo '<td class="thItem">' . $rowUser['fullname'].'</td>';
-            echo '<td class="thItem">' . $rowUser['team'].'</td>';
-            echo '<td class="thItem">' . $rowUser['manager'].'</td>';
-            $this->iteratAllDaysInView($daterange, $useSchedule);
+            echo '<td class="thItem">' . $rowUser['fullname'] . '</td>';
+            echo '<td class="thItem">' . $rowUser['team'] . '</td>';
+            echo '<td class="thItem">' . $rowUser['manager'] . '</td>';
+            $this->iterateAllDaysInViewHtml($daterange, $useSchedule);
             echo '</tr>';
         }
         echo '</tbody>';
@@ -92,18 +133,37 @@ class OverviewGet
         return $useSchedule;
     }
 
-    private function iteratAllDaysInView($daterange, $useSchedule)
+    private function iterateAllDaysInViewJson($daterange, $useSchedule)
+    {
+        $userSchedule = array();
+        foreach ($daterange as $aDate) {
+            if (DateHelper::isWeekend($aDate->format("Y-m-d")) == false) {
+                foreach ($useSchedule as $aDay) {
+                    if (in_array($aDate->format("Y-m-d"), $aDay)) {
+                        $day = array();
+                        $day['type']=$aDay['type'];
+                        $day['approved']=$aDay['approved'];
+                        $day['id']=$aDay['id'];
+                        $userSchedule[$aDate->format("Y-m-d")] = $day;
+                    }
+                }
+            }
+        }
+        return $userSchedule;
+    }
+
+    private function iterateAllDaysInViewHtml($daterange, $useSchedule)
     {
         foreach ($daterange as $aDate) {
             if (DateHelper::isWeekend($aDate->format("Y-m-d")) == false) {
                 $cellStr = '<td>.</td>';
-                $cellStr = $this->iterateAllDaysInViewAndEchoTypeToCellIfDateExist($useSchedule, $aDate, $cellStr);
+                $cellStr = $this->iterateAllDaysInViewAndEchoTypeToCellIfDateExistHTML($useSchedule, $aDate, $cellStr);
                 echo $cellStr;
             }
         }
     }
 
-    private function iterateAllDaysInViewAndEchoTypeToCellIfDateExist($useSchedule, $aDate, $cellStr)
+    private function iterateAllDaysInViewAndEchoTypeToCellIfDateExistHTML($useSchedule, $aDate, $cellStr)
     {
         foreach ($useSchedule as $aDay) {
             if (in_array($aDate->format("Y-m-d"), $aDay)) {
@@ -112,6 +172,17 @@ class OverviewGet
             }
         }
         return $cellStr;
+    }
+
+    /**
+     * @param $con
+     * @return bool|mysqli_result
+     */
+    private function getAllUsers($con)
+    {
+        $sqlUser = 'SELECT * FROM users';
+        $resultUser = mysqli_query($con, $sqlUser);
+        return $resultUser;
     }
 }
 

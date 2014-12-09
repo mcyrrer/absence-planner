@@ -24,7 +24,7 @@ body {
 .container_16 {
 	margin-left: auto;
 	margin-right: auto;
-	width: 1024px;
+	width: 100%;
 }
 
 /* `Grid >> Global
@@ -133,7 +133,7 @@ body {
 }
 
 .container_12 .grid_11 {
-	width: 1024px;
+	width: 100%;
 }
 
 /* `Grid >> 16 Columns

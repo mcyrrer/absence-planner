@@ -51,7 +51,6 @@ class createtestdata
         $stateArray[] = "vacation";
         $stateArray[] = "course";
         $stateArray[] = "parental";
-        $stateArray[] = "none";
 
         $begin = new DateTime(date('Y-m-d', time()));
         $end = new DateTime(date('Y-m-d', time()));
