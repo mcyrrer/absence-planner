@@ -2,8 +2,10 @@
 require '../../../vendor/autoload.php';
 require '../../../settings.inc';
 require '../../../classes/OverviewGet.php';
+require '../../../classes/Logging.php';
 
-
+$l = new Logging();
+$logger = $l->getLogger();
 if (UNIT_TEST_SERVER && isset($_REQUEST['user'])) {
     $user = $_REQUEST['user'];
 } elseif (isset($_SERVER['AUTHENTICATE_SAMACCOUNTNAME'])) {
@@ -12,12 +14,11 @@ if (UNIT_TEST_SERVER && isset($_REQUEST['user'])) {
     $user = 'testuser';
 }
 
+$logger->addDebug($user ." overview api start",array(__FILE__,__LINE__));
 $overviewGet = new OverviewGet();
-if (isset($_REQUEST['json'])) {
-    echo $overviewGet->getOverviewView();
-} else {
-    $overviewGet->getOverviewView();
-}
+echo $overviewGet->getOverviewView();
+$logger->addDebug($user ." overview api end",array(__FILE__,__LINE__));
 
-//echo json_encode($scheduleGet->getUserSchedule($user), JSON_PRETTY_PRINT);
+
+
 
