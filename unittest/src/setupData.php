@@ -21,13 +21,31 @@ class setupData
         self::$manager = self::generateRandomString(4);
 
         //setup user
-        $sql = "DELETE FROM events WHERE user='" . self::$username . "'";
+        $sql = "DELETE FROM events";
         mysqli_query($dbh, $sql);
+
+        $sql = "DELETE FROM users";
+        mysqli_query($dbh, $sql);
+
         $sql = "INSERT INTO users (username, fullname, team, manager ) VALUES ('" . self::$username . "', 'TEST USER', '" . self::$team . "', '" . self::$manager . "' )";
         mysqli_query($dbh, $sql);
 
         //setup testevent
-        $sql = "INSERT INTO events ( type, user, eventDate ) VALUES ( 'vacation', '" . self::$username . "', '2014-11-01' ), ( 'course', '" . self::$username . "', '2014-11-02' ), ( 'parental', '" . self::$username . "', '2014-11-03' )";
+        $now = date('Y-m-d', time());
+
+        $nowDT = new DateTime($now);
+        $tomorrowDT = new DateTime($now);
+        $dayaftertomorrowDT = new DateTime($now);
+
+        $tomorrowDT = $tomorrowDT->modify('+1 day');
+        $dayaftertomorrowDT = $dayaftertomorrowDT->modify('+2 day');
+
+        $tomorrow = $tomorrowDT->format("Y-m-d");
+        $dayaftertomorrow = $dayaftertomorrowDT->format("Y-m-d");
+
+
+
+        $sql = "INSERT INTO events ( type, user, eventDate ) VALUES ( 'vacation', '" . self::$username . "', '".$now."' ), ( 'course', '" . self::$username . "', '".$tomorrow."' ), ( 'parental', '" . self::$username . "', '".$dayaftertomorrow."' )";
         mysqli_query($dbh, $sql);
 
         //setup manager

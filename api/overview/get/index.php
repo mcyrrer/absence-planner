@@ -2,10 +2,10 @@
 require '../../../vendor/autoload.php';
 require '../../../settings.inc';
 require '../../../classes/OverviewGet.php';
-require '../../../classes/Logging.php';
+//require '../../../classes/Logging.php';
 
-$l = new Logging();
-$logger = $l->getLogger();
+//$l = new Logging();
+//$logger = $l->getLogger();
 if (UNIT_TEST_SERVER && isset($_REQUEST['user'])) {
     $user = $_REQUEST['user'];
 } elseif (isset($_SERVER['AUTHENTICATE_SAMACCOUNTNAME'])) {
@@ -14,10 +14,17 @@ if (UNIT_TEST_SERVER && isset($_REQUEST['user'])) {
     $user = 'testuser';
 }
 
-$logger->addDebug($user ." overview api start",array(__FILE__,__LINE__));
+//$logger->addDebug($user . " overview api start", array(__FILE__, __LINE__));
 $overviewGet = new OverviewGet();
-echo $overviewGet->getOverviewView();
-$logger->addDebug($user ." overview api end",array(__FILE__,__LINE__));
+$scheduleIncDateRange = $overviewGet->getOverviewView();
+
+if (version_compare(phpversion(), '5.3.10', '<')) {
+    echo json_encode($scheduleIncDateRange);
+} else {
+    echo json_encode($scheduleIncDateRange, JSON_PRETTY_PRINT);
+}
+
+//$logger->addDebug($user . " overview api end", array(__FILE__, __LINE__));
 
 
 

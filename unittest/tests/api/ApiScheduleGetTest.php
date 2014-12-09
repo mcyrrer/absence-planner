@@ -60,7 +60,7 @@ class ApiScheduleGet extends PHPUnit_Framework_TestCase
     {
         $scheduleArray = json_decode(self::$response, true);
         foreach ($scheduleArray as $aSchedule) {
-            $this->assertCount(8, $aSchedule);
+            $this->assertCount(9, $aSchedule);
         }
     }
 

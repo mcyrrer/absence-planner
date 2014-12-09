@@ -3,7 +3,7 @@ require_once BASEPATH . '/vendor/autoload.php';
 require_once BASEPATH . '/classes/DbHelper.php';
 require_once BASEPATH . '/classes/DateHelper.php';
 require_once BASEPATH . '/classes/ScheduleObject.php';
-
+require_once BASEPATH . '/classes/Logging.php';
 
 
 /**
@@ -30,21 +30,22 @@ class OverviewGet
             $from = date('Y-m-d', time());
         }
         $begin = new DateTime($from);
-        $end = new DateTime($from);
+        $begin->modify('-1 day');
 
+        $end = new DateTime($from);
         if (isset($_REQUEST['range'])) {
             $range = $dbM::escape($con, $_REQUEST['range']);
 
             $end = $end->modify('+' . $range);
         } else {
-            $end = $end->modify('+2 month');
+            $end = $end->modify('+60 day');
         }
 
-        return $this->getOverviewViewJson($con, $begin, $end);
+        return $this->getOverviewViewArray($con, $begin, $end);
     }
 
 
-    private function getOverviewViewJson($con, $begin, $end)
+    private function getOverviewViewArray($con, $begin, $end)
     {
         $interval = new DateInterval('P1D');
         $daterange = new DatePeriod($begin, $interval, $end);
@@ -66,6 +67,7 @@ class OverviewGet
             $useSchedule = $this->getUserScheduleFromDb($rowUser, $begin, $end, $con);
 
             $user['fullname'] = $rowUser['fullname'];
+            $user['username'] = $rowUser['username'];
             $user['team'] = $rowUser['team'];
             $user['manager'] = $rowUser['manager'];
             $user['id'] = $rowUser['id'];
@@ -74,16 +76,12 @@ class OverviewGet
         }
         $scheduleIncDateRange['dates'] = $dates;
         $scheduleIncDateRange['schedules'] = $userScheduleInformation;
-        if (version_compare(phpversion(), '5.3.10', '<')) {
-            return json_encode($scheduleIncDateRange);
-        } else {
-            return json_encode($scheduleIncDateRange, JSON_PRETTY_PRINT);
-        }
+        return $scheduleIncDateRange;
     }
 
     private function getUserScheduleFromDb($rowUser, $begin, $end, $con)
     {
-        $sqlUserSchedule = "SELECT * FROM events WHERE user='" . $rowUser['username'] . "' AND eventDate > '" . $begin->format("Y-m-d") . "' AND eventDate < '" . $end->format("Y-m-d") . "'";
+        $sqlUserSchedule = "SELECT * FROM events WHERE user='" . $rowUser['username'] . "' AND eventDate >= '" . $begin->format("Y-m-d") . "' AND eventDate < '" . $end->format("Y-m-d") . "'";
         $resultUseSchedule = mysqli_query($con, $sqlUserSchedule);
         $useSchedule = mysqli_fetch_all($resultUseSchedule, MYSQLI_ASSOC);
         return $useSchedule;
@@ -102,6 +100,7 @@ class OverviewGet
                         $day['approved'] = $aDay['approved'];
                         $day['id'] = $aDay['id'];
                         $userSchedule[$aDate->format("Y m d")] = $day;
+//                        $userSchedule[$day['id']] = $day;
                     }
                 }
             }

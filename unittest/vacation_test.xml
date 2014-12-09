@@ -14,7 +14,7 @@
 
     <testsuites>
         <testsuite name="dev">
-            <file>tests/classes/ApprovalGetTest.php</file>
+            <file>tests/classes/OverviewGetTest.php</file>
         </testsuite>
     </testsuites>
 
