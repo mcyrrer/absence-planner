@@ -1,9 +1,6 @@
 <?php
 require_once BASEPATH.'/vendor/autoload.php';
-require_once BASEPATH.'/classes/DbHelper.php';
-require_once BASEPATH.'/classes/DateHelper.php';
-require_once BASEPATH.'/classes/ScheduleObject.php';
-require_once BASEPATH.'/classes/Logging.php';
+require_once BASEPATH.'/classes/autoloader.php';
 
 
 /**

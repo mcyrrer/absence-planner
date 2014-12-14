@@ -56,6 +56,48 @@ $(document).ready(function () {
 
 });
 
+function getApprovalToDo()
+{
+    $.ajax({
+        type: "GET",
+        url: 'api/approval/get/index.php',
+        statusCode: {
+            500: function () {
+                alert("Could not save data");
+            }
+        },
+        success: function (data) {
+            var returnedData = JSON.parse(data);
+            $('.box').html("");
+            $.each(returnedData,function(i,eventObjects){
+
+                $('.box').append(eventObjects[0]['fullname']+"["+eventObjects[0]['username']+"] <span class='link' onclick='javascript: approvalSetAll(\""+eventObjects[0]['user']+"\", 1);'>[Approve all]</span><br>");
+
+                $.each(eventObjects,function(i,aEventObject){
+                    $('.box').append("[<span class='link'> Approve</span>] [<span class='link'>Deny</span>] "+aEventObject["date"]+" " +aEventObject["title"]+" " +aEventObject["approvalStatus"]+"<br>");
+                });
+                $('.box').append('<br>');
+
+            });
+        }
+    });
+}
+
+function approvalSetAll(user, state) {
+    $.ajax({
+        type: "POST",
+        url: "api/approval/set/index.php",
+        data: {
+            state: state,
+            user: user
+        },
+        cache: false
+    })
+        .done(function (html) {
+            getApprovalToDo();
+        });
+}
+
 function eventClick(date, obj) {
     var vacation = 'red';
     var vacation_rgb = 'rgb(255, 0, 0)';

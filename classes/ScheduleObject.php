@@ -14,10 +14,13 @@ class ScheduleObject {
         $resultArray['title'] = $row['type'];
         $resultArray['id'] = $row['id'];
         $resultArray['user'] = $row['user'];
+        $resultArray['fullname'] = $row['fullname'];
         $resultArray['manager'] = $row['manager'];
+        $resultArray['team'] = $row['team'];
         $resultArray['approvalStatus'] = $row['approved'];
         $resultArray['start'] = $row['eventDate'] . ' 02:00:00';
         $resultArray['end'] = $row['eventDate'] . ' 23:00:00';
+        $resultArray['date'] = $row['eventDate'];
         $color = $this->getAbsenceReasonColor($row);
         $resultArray['backgroundColor'] = $color;
         return $resultArray;

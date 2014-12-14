@@ -13,8 +13,15 @@
     </testsuites>
 
     <testsuites>
+        <testsuite name="api">
+            <directory>tests</directory>
+            <exclude>tests/classes</exclude>
+        </testsuite>
+    </testsuites>
+
+    <testsuites>
         <testsuite name="dev">
-            <file>tests/classes/OverviewGetTest.php</file>
+            <file>tests/classes/ScheduleSetTest.php</file>
         </testsuite>
     </testsuites>
 

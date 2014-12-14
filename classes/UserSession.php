@@ -1,7 +1,6 @@
 <?php
 require_once BASEPATH . '/vendor/autoload.php';
-require_once BASEPATH . '/classes/DbHelper.php';
-require_once BASEPATH . '/classes/Logging.php';
+require_once BASEPATH . '/classes/autoloader.php';
 
 
 class UserSession
@@ -27,15 +26,17 @@ class UserSession
             }
         }
 
-        if (!array_key_exists('user', $_SESSION)) {
-            self::$logger->addDebug('User already have an active session');
-            $_SESSION['user'] ="abc";
+        if (array_key_exists('user', $_SESSION) ) {
+            self::$logger->addDebug('User already have an active session', array(__FILE__, __LINE__));
+            $this->checkIfManagerAndSetupSession($_SESSION['user']);
+
         } elseif (isset($_SERVER['AUTHENTICATE_SAMACCOUNTNAME'])) {
             $_SESSION['user'] = $_SERVER['AUTHENTICATE_SAMACCOUNTNAME'];
-            self::$logger->addDebug($_SESSION['user'] . ' logged in via SAMACCOUNTNAME', array(__FILE__, __LINE__));
+            self::$logger->addInfo($_SESSION['user'] . ' logged in via SAMACCOUNTNAME', array(__FILE__, __LINE__));
             $this->checkIfManagerAndSetupSession($_SESSION['user']);
         } else {
-            self::$logger->addDebug('User '.$_SESSION['user'].' already have an active session');
+
+            self::$logger->addInfo('Not a valid user, could not start session', array(__FILE__, __LINE__));
         }
     }
 
@@ -45,14 +46,22 @@ class UserSession
         $con = $dbM->connectToMainDb();
 
         $sql = "SELECT * FROM mangers WHERE manager_user_id='" . $user . "'";
+
         $result = mysqli_query($con, $sql);
-        if (!$result) {
+        if ($result) {
             if (mysqli_num_rows($result) == 1) {
                 $managerInfo = mysqli_fetch_assoc($result);
                 $_SESSION['manager'] = true;
                 $_SESSION['managerlevel'] = $managerInfo['accesslevel'];
             }
+            else
+            {
+                $_SESSION['manager'] = false;
+                self::$logger->addDebug($user . ' is not a manager', array(__FILE__, __LINE__));
+
+            }
         } else {
+            $_SESSION['manager'] = false;
             self::$logger->addDebug($user . ' is not a manager', array(__FILE__, __LINE__));
 
         }

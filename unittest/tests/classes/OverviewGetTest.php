@@ -15,6 +15,7 @@ class OverviewGetTest extends PHPUnit_Framework_TestCase {
 
     protected static $dbh;
     protected static $username;
+    public $sd;
 
     public static function setUpBeforeClass()
     {
@@ -41,7 +42,7 @@ class OverviewGetTest extends PHPUnit_Framework_TestCase {
         $overviewGet = new OverviewGet();
         $overviewArray = $overviewGet->getOverviewView();
         //We have a range of 60 days but do not return weekends so 45 is ok.
-        $this->assertCount(45, $overviewArray['dates']);
+        $this->assertGreaterThan(43, $overviewArray['dates']);
 
     }
 
@@ -62,10 +63,13 @@ class OverviewGetTest extends PHPUnit_Framework_TestCase {
 
     public function testGetOverviewViewScheduleKeys()
     {
+        $sd = new setupData();
+        $sd->generateDays();
+
         $overviewGet = new OverviewGet();
         $overviewArray = $overviewGet->getOverviewView();
-        $now = date('Y m d', time());
-        $scheduleItem = $overviewArray['schedules']['TEST USER']['schedule'][$now];
+
+        $scheduleItem = $overviewArray['schedules']['TEST USER']['schedule'][$sd->getDay1()];
         $this->assertArrayHasKey("type",$scheduleItem);
         $this->assertArrayHasKey("date",$scheduleItem);
         $this->assertArrayHasKey("approved",$scheduleItem);

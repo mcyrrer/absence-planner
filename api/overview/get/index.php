@@ -1,8 +1,9 @@
 <?php
 require '../../../vendor/autoload.php';
 require '../../../settings.inc';
-require '../../../classes/OverviewGet.php';
-//require '../../../classes/Logging.php';
+require '../../../classes/autoloader.php';
+new UserSession();
+
 
 //$l = new Logging();
 //$logger = $l->getLogger();

@@ -7,8 +7,8 @@
  */
 
 require_once '../vendor/autoload.php';
+require_once '../classes/autoloader.php';
 require_once '../settings.inc';
-require_once '../classes/ScheduleSet.php';
 require_once 'src/setupData.php';
 
 class ScheduleSetTest extends PHPUnit_Framework_TestCase
@@ -33,6 +33,10 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
         $sql = "DELETE FROM events WHERE user=" . self::$username;
         mysqli_query(self::$dbh, $sql);
         self::$username = microtime();
+        //session_start();
+        $_SESSION['user']=self::$username;
+        $_SESSION['manager']=0;
+
         unset($_REQUEST);
     }
 
@@ -47,12 +51,15 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleOneDayInsert()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["date"] = self::SINGLEDATE;
         $_REQUEST["state"] = self::EVENTTYPE_VACATION;
 
+
         $scheduleSet = new ScheduleSet();
         $scheduleSet->setUserSchedule(self::$username);
+
 
         $sql = "SELECT * FROM events WHERE user='" . self::$username . "'";
         $result = mysqli_query(self::$dbh, $sql);
@@ -68,6 +75,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleOneDayUpdate()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["date"] = self::SINGLEDATE;
         $_REQUEST["state"] = self::EVENTTYPE_VACATION;
@@ -92,6 +100,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleOneDayDelete()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["date"] = self::SINGLEDATE;
         $_REQUEST["state"] = self::EVENTTYPE_VACATION;
@@ -113,6 +122,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleDateRange()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["state"]= self::EVENTTYPE_VACATION;
         $_REQUEST["from"]= self::DATEFROM;
@@ -120,7 +130,6 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
 
         $scheduleSet = new ScheduleSet();
         $scheduleSet->setUserSchedule(self::$username);
-
         $sql = "SELECT * FROM events WHERE user='".self::$username."'";
         $result = mysqli_query(self::$dbh,$sql);
         $allRows = mysqli_fetch_all($result,MYSQLI_ASSOC);
@@ -135,6 +144,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleNoState()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["from"]= self::DATEFROM;
         $_REQUEST["to"]= self::DATETO;
@@ -155,6 +165,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleNoDate()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["state"]= self::EVENTTYPE_VACATION;
 
@@ -174,6 +185,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleOneDayInsertStateNone()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["date"] = self::SINGLEDATE;
         $_REQUEST["state"] = self::EVENTTYPE_NONE;
@@ -192,6 +204,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     public function testSetUserScheduleOneDayInsertInvalidDate()
     {
         self::$username = microtime();
+        $_SESSION['user']= self::$username;
 
         $_REQUEST["date"] = self::SINGLEDATE_INVALID;
         $_REQUEST["state"] = self::EVENTTYPE_VACATION;

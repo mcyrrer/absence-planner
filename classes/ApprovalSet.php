@@ -1,9 +1,6 @@
 <?php
-require_once BASEPATH . '/vendor/autoload.php';
-require_once BASEPATH . '/classes/DbHelper.php';
-require_once BASEPATH . '/classes/DateHelper.php';
-require_once BASEPATH . '/classes/ScheduleObject.php';
-require_once BASEPATH . '/classes/Logging.php';
+require_once BASEPATH.'/vendor/autoload.php';
+require_once BASEPATH.'/classes/autoloader.php';
 
 
 /**
@@ -29,7 +26,24 @@ class ApprovalSet
         $state=$dbM->escape($con,$state);
 
         $sql = "UPDATE events SET approved = ".$state.",approvedBy='" . $manager . "' WHERE id = " . $eventId;
-        $this->logger->addInfo($sql,array(__FILE__, __LINE__));
+        $this->logger->addInfo("Updated event ".$eventId." for user Id ".$userId." to ". $state,array(__FILE__, __LINE__));
+
+
+        $result = mysqli_query($con, $sql);
+
+        return $this->evaluateSqlResult($result,$sql);
+    }
+
+    public function setApprovalForAllEvent($manager, $userName,$state)
+    {
+
+        $dbM = new DbHelper();
+        $con = $dbM->connectToMainDb();
+        $userName=$dbM->escape($con,$userName);
+        $state=$dbM->escape($con,$state);
+
+        $sql = "UPDATE events SET approved = ".$state.",approvedBy='" . $manager . "' WHERE user = '" . $userName."'";
+        $this->logger->addInfo("Updated ALL events for user Id ".$userName." to ". $state,array(__FILE__, __LINE__));
 
         $result = mysqli_query($con, $sql);
 

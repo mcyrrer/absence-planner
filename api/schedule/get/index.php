@@ -1,18 +1,11 @@
 <?php
 //require '../../../vendor/autoload.php';
 require '../../../settings.inc';
-require '../../../classes/ScheduleGet.php';
+require '../../../classes/autoloader.php';
+new UserSession();
 
-
-if (UNIT_TEST_SERVER && isset($_REQUEST['user'])) {
-    $user = $_REQUEST['user'];
-}elseif (isset($_SERVER['AUTHENTICATE_SAMACCOUNTNAME'])) {
-    $user = $_SERVER['AUTHENTICATE_SAMACCOUNTNAME'];
-} else {
-    $user = 'testuser';
-}
 
 $scheduleGet = new ScheduleGet();
-
+$user = $_SESSION['user'];
 echo json_encode($scheduleGet->getUserSchedule($user), JSON_PRETTY_PRINT);
 

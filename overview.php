@@ -1,6 +1,8 @@
 <?php
 require 'vendor/autoload.php';
-require 'classes/HtmlIncludes.php';
+require 'classes/autoloader.php';
+require 'settings.inc';
+new UserSession();
 
 $log = new Monolog\Logger('name');
 $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));

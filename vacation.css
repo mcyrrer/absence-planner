@@ -31,6 +31,9 @@ body {
     text-align: center;
 
 }
+.link {
+    cursor:pointer;
+}
 
 .explainBoxes {
     margin: 30px;

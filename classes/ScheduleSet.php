@@ -1,8 +1,6 @@
 <?php
-require_once BASEPATH . '/vendor/autoload.php';
-require_once BASEPATH . '/classes/DbHelper.php';
-require_once BASEPATH . '/classes/DateHelper.php';
-require_once BASEPATH . '/classes/Logging.php';
+require_once BASEPATH.'/vendor/autoload.php';
+require_once BASEPATH.'/classes/autoloader.php';
 
 /**
  * Class to help out with common mysql tasks
@@ -20,7 +18,7 @@ class ScheduleSet
 
     public function setUserSchedule($user)
     {
-        self::$user = $user;
+        self::$user = $_SESSION['user'];
         $dbM = new DbHelper();
         $dateH = new DateHelper();
         $con = $dbM->connectToMainDb();
@@ -144,7 +142,7 @@ class ScheduleSet
     {
         self::$logger->addDebug('Update of event: ' . self::$user . ' ' . $date, array(__FILE__, __LINE__));
 
-        $sql = "UPDATE events  SET type = '$state' WHERE user = '$user' AND eventDate = '$date'";
+        $sql = "UPDATE events  SET type = '$state', approved=0 WHERE user = '$user' AND eventDate = '$date'";
         return $sql;
     }
 
@@ -156,9 +154,10 @@ class ScheduleSet
      */
     private function insertEvent($user, $date, $state)
     {
-        self::$logger->addDebug('type is NOT none: ', array(__FILE__, __LINE__));
 
         $sql = "INSERT INTO events (type, user, eventDate) VALUES ('$state','$user','$date') ";
+        self::$logger->addDebug($sql, array(__FILE__, __LINE__));
+
         return $sql;
     }
 

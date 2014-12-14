@@ -12,6 +12,9 @@ class setupData
 //    protected  $username;
     protected static $manager;
     protected static $team;
+    public $day1;
+    public $day2;
+    public $day3;
 
 
     public function insertScheduleToDb($dbh)
@@ -31,21 +34,11 @@ class setupData
         mysqli_query($dbh, $sql);
 
         //setup testevent
-        $now = date('Y-m-d', time());
 
-        $nowDT = new DateTime($now);
-        $tomorrowDT = new DateTime($now);
-        $dayaftertomorrowDT = new DateTime($now);
-
-        $tomorrowDT = $tomorrowDT->modify('+1 day');
-        $dayaftertomorrowDT = $dayaftertomorrowDT->modify('+2 day');
-
-        $tomorrow = $tomorrowDT->format("Y-m-d");
-        $dayaftertomorrow = $dayaftertomorrowDT->format("Y-m-d");
+        $this->generateDays();
 
 
-
-        $sql = "INSERT INTO events ( type, user, eventDate ) VALUES ( 'vacation', '" . self::$username . "', '".$now."' ), ( 'course', '" . self::$username . "', '".$tomorrow."' ), ( 'parental', '" . self::$username . "', '".$dayaftertomorrow."' )";
+        $sql = "INSERT INTO events ( type, user, eventDate ) VALUES ( 'vacation', '" . self::$username . "', '" . $this->day1 . "' ), ( 'course', '" . self::$username . "', '" . $this->day2 . "' ), ( 'parental', '" . self::$username . "', '" . $this->day3 . "' )";
         mysqli_query($dbh, $sql);
 
         //setup manager
@@ -53,6 +46,22 @@ class setupData
         mysqli_query($dbh, $sql);
 
         return self::$username;
+    }
+
+    private function getNextDay(DateTime $date)
+    {
+        $date = $date->modify("+1 day");
+        if ($this->isWeekend($date->format("Y-m-d")) == false) {
+            return $date;
+        } else {
+            return self::getNextDay($date);
+        }
+
+    }
+
+    private function isWeekend($date)
+    {
+        return (date('N', strtotime($date)) >= 6);
     }
 
     private static function generateRandomString($length = 10)
@@ -87,6 +96,47 @@ class setupData
     public static function getUsername()
     {
         return self::$username;
+    }
+
+    public function generateDays()
+    {
+        $now = date('Y-m-d', time());
+        $nowDT = new DateTime($now);
+
+        $day1DT = self::getNextDay($nowDT);
+        $this->day1 = $day1DT->format("Y-m-d");
+
+        $day2DT = self::getNextDay($day1DT);
+        $this->day2 = $day2DT->format("Y-m-d");
+
+        $day3DT = self::getNextDay($day2DT);
+        $this->day3 = $day3DT->format("Y-m-d");
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDay1()
+    {
+        return str_replace('-',' ',$this->day1);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDay3()
+    {
+        return str_replace('-',' ',$this->day2);
+
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDay2()
+    {
+        return str_replace('-',' ',$this->day3);
+
     }
 
 

@@ -15,6 +15,7 @@ class createtestdata
     var $dbM;
     var $con;
     var $userNames;
+    var $names;
     protected static $managerArray;
 
 
@@ -32,17 +33,17 @@ class createtestdata
     public function createTestData($managecount, $userCount)
     {
         echo 'Truncate all database tables';
-        mysqli_query($this->con,'truncate table users;');
-        mysqli_query($this->con,'truncate table teams;');
-        mysqli_query($this->con,'truncate table mangers;');
-        mysqli_query($this->con,'truncate table events;');
+        $this->names = $this->getNames();
+        mysqli_query($this->con, 'truncate table users;');
+        mysqli_query($this->con, 'truncate table teams;');
+        mysqli_query($this->con, 'truncate table mangers;');
+        mysqli_query($this->con, 'truncate table events;');
         $this->createManager($managecount);
         $this->createUsers($userCount, $managecount);
         $this->createTestEvents();
         $this->createOneUser(9999, 'testuser', 'Surname Lastname', '', '1');
 
     }
-
 
 
     private function createTestEvents()
@@ -64,7 +65,7 @@ class createtestdata
                 $state = $stateArray[rand(0, count($stateArray) - 1)];
                 $user = $this->userNames[rand(0, count($this->userNames) - 1)];
                 $result = $this->insertOneDayToDbMocker($user, $aDate->format("Ymd"), $state);
-                echo "Created event ".$user." ".$aDate->format("Ymd")." ".$state."\n";
+                echo "Created event " . $user . " " . $aDate->format("Ymd") . " " . $state . "\n";
             }
         }
     }
@@ -72,11 +73,13 @@ class createtestdata
     private function createManager($numberOfManager)
     {
         for ($i = 0; $i <= $numberOfManager; $i++) {
-            $sName = $this->generateRandomString(rand(5, 10));
-            $lName = $this->generateRandomString(rand(5, 10));
-            $name = $sName . ' ' . $lName;
-            $uName = $this->generateRandomString(4);
+            $sName = $this->generateRandomName();
+            $lName = $this->generateRandomName();
+            $uName = $this->generateRandomName();
+
+            $name = $sName . ' ' . $lName . '(MANAGER)';
             $this->createOneUser($i, $uName, $name, 'Mangers', '-');
+
             self::$managerArray[] = $uName;
             $sql = "INSERT
                 INTO
@@ -94,7 +97,7 @@ class createtestdata
             if ($result == false) {
                 $this->log->addError('could not execute sql: ' . $sql);
             }
-            echo "Created manager ".$uName."\n";
+            echo "Created manager " . $uName . "\n";
         }
     }
 
@@ -103,19 +106,19 @@ class createtestdata
 
         $managecount = $managecount + 1;
         for ($i = 0; $i <= $numberOfUses; $i++) {
-            $sName = $this->generateRandomString(rand(5, 10));
-            $lName = $this->generateRandomString(rand(5, 10));
-            $name = $sName . ' ' . $lName;
-            $uName = $this->generateRandomString(4);
-            $managerID = rand(0, count(self::$managerArray)-1);
+            $lName = $this->generateRandomName();
+            $uName = $this->generateRandomName();
+            $managerID = rand(0, count(self::$managerArray) - 1);
             $manager = self::$managerArray[$managerID];
+            $name = $uName . ' ' . $lName . '(' . $manager . ')';
 
-            echo "Manager : ".$manager;
+
+            echo "Manager : " . $manager;
             $team = "A-team";
-            $id = $i +100;
+            $id = $i + 100;
 
             $this->createOneUser($id, $uName, $name, $team, $manager);
-            echo "Created user ".$name."\n";
+            echo "Created user " . $name . "\n";
 
         }
 
@@ -159,6 +162,11 @@ class createtestdata
         return $randomString;
     }
 
+    private function generateRandomName()
+    {
+        $len = count($this->names);
+        return $this->names[rand(0, $len - 1)];
+    }
 
     /**
      * @param $user
@@ -213,5 +221,21 @@ class createtestdata
         if ($result == false) {
             $this->log->addError('could not execute sql: ' . $sql);
         }
+    }
+
+
+    private function getNames()
+    {
+        $file = fopen("names.csv","r");
+        $nameArray = array();
+// for each line in the file, until EOF
+        while( ($line = fgets($file)) !== false) {
+            // split out the tab char:
+            $beforeTab = explode( " ", $line)[0];
+            // now, parse the CSV part
+            $parsedCSV = str_getcsv( $beforeTab);
+            $nameArray[] = $parsedCSV[0];
+        }
+    return $nameArray;
     }
 }
