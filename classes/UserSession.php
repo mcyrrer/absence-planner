@@ -26,17 +26,24 @@ class UserSession
             }
         }
 
-        if (array_key_exists('user', $_SESSION) ) {
+        if (array_key_exists('user', $_SESSION)) {
             self::$logger->addDebug('User already have an active session', array(__FILE__, __LINE__));
-            $this->checkIfManagerAndSetupSession($_SESSION['user']);
+            if (self::checkIfUserExist($_SESSION['user'])) {
+                $this->checkIfManagerAndSetupSession($_SESSION['user']);
+            } else {
+                self::$logger->addWarning('Destroying user session!', array(__FILE__, __LINE__));
+                session_destroy();
+            }
 
         } elseif (isset($_SERVER['AUTHENTICATE_SAMACCOUNTNAME'])) {
             $_SESSION['user'] = $_SERVER['AUTHENTICATE_SAMACCOUNTNAME'];
             self::$logger->addInfo($_SESSION['user'] . ' logged in via SAMACCOUNTNAME', array(__FILE__, __LINE__));
             $this->checkIfManagerAndSetupSession($_SESSION['user']);
         } else {
-
             self::$logger->addInfo('Not a valid user, could not start session', array(__FILE__, __LINE__));
+            echo "You do not have a valid user name!";
+            echo "Get a valid session!";
+            exit();
         }
     }
 
@@ -53,9 +60,7 @@ class UserSession
                 $managerInfo = mysqli_fetch_assoc($result);
                 $_SESSION['manager'] = true;
                 $_SESSION['managerlevel'] = $managerInfo['accesslevel'];
-            }
-            else
-            {
+            } else {
                 $_SESSION['manager'] = false;
                 self::$logger->addDebug($user . ' is not a manager', array(__FILE__, __LINE__));
 
@@ -64,6 +69,27 @@ class UserSession
             $_SESSION['manager'] = false;
             self::$logger->addDebug($user . ' is not a manager', array(__FILE__, __LINE__));
 
+        }
+    }
+
+    private function checkIfUserExist($user)
+    {
+        $dbM = new DbHelper();
+        $con = $dbM->connectToMainDb();
+
+        $sql = "SELECT * FROM users WHERE username='" . $user . "'";
+
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) == 1) {
+                return true;
+            } else {
+                self::$logger->addWarning($user . ' is not a valid user!', array(__FILE__, __LINE__));
+                return false;
+            }
+        } else {
+            self::$logger->addWarning($user . ' is not a valid user!', array(__FILE__, __LINE__));
+            return false;
         }
     }
 

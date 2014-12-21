@@ -8,14 +8,15 @@ body {
     font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
     /*font-family: 'Bitter', serif;*/
 
-    background-color: #f4cbc9;
-    background-image: linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
-    background-image: -o-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
-    background-image: -moz-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(87, 87, 87)), color-stop(0.50, rgb(121, 121, 121)), color-stop(1, rgb(229, 229, 229)));
-    background-image: -webkit-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
-    background-image: -ms-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ab99b4', endColorstr='#f4cbc9');
+    background-color: #ffffff;
+    /*background-color: #f4cbc9;*/
+    /*background-image: linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);*/
+    /*background-image: -o-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);*/
+    /*background-image: -moz-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);*/
+    /*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(87, 87, 87)), color-stop(0.50, rgb(121, 121, 121)), color-stop(1, rgb(229, 229, 229)));*/
+    /*background-image: -webkit-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);*/
+    /*background-image: -ms-linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);*/
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ab99b4', endColorstr='#f4cbc9');*/
     background-attachment: fixed;
     min-height: 100%;
 }
@@ -31,8 +32,13 @@ body {
     text-align: center;
 
 }
+
 .link {
-    cursor:pointer;
+    cursor: pointer;
+}
+
+.center {
+    text-align: center;
 }
 
 .explainBoxes {
@@ -84,8 +90,7 @@ body {
     padding-bottom: 30px;
 }
 
-.wizard
-{
+.wizard {
     font-size: large;
     padding: 10px;
     text-align: center;
@@ -102,41 +107,39 @@ body {
     border-style: solid;
     border-color: #aaaaaa;
     width: 600px;
-    height: 350px;
+    height: 370px;
 
     text-align: center;
     margin: 2cm auto;
     text-align: left;
     /*background-image: linear-gradient(top, rgb(87, 87, 87) 0%, rgb(121, 121, 121) 50%, rgb(229, 229, 229) 100%);*/
-    background-image: linear-gradient( 0deg, rgb(127, 245, 0) 0%, rgb(29, 201, 24) 50%, rgb(19, 150, 18) 100%);
+    background-image: linear-gradient(0deg, rgb(127, 245, 0) 0%, rgb(29, 201, 24) 50%, rgb(19, 150, 18) 100%);
     /*background-image: linear-gradient(left, right, from(#A1D004), to(#6B9A00));*/
 
-
-     /*mozila code*/
+    /*mozila code*/
     /*background-image: -moz-linear-gradient(left, right, from(#A1D004), to(#6B9A00));*/
 
-     /*webkit code*/
+    /*webkit code*/
     /*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #A1D004), color-stop(1.00, #6B9A00));*/
 
-     /*IE code - note GradientType=0 means vertical*/
+    /*IE code - note GradientType=0 means vertical*/
     /*filter: progid:DXImageTransform.Microsoft.gradient(enabled='true', startColorstr=#A1D004, endColorstr=#6B9A00, GradientType=0);*/
 
 }
 
-select
-{
+select {
     border-radius: 10px;
     padding: 0.2em 0.2em;
 }
-input
-{
+
+input {
     border-radius: 10px;
 
     padding: 0.2em 0.2em;
 
 }
-button
-{
+
+button {
     border-radius: 10px;
 
     padding: 0.2em 0.2em;
@@ -145,18 +148,16 @@ button
 .table-wrapper {
     /*overflow-x:scroll;*/
     /*overflow-y:visible;*/
-    width:90%;
+    width: 90%;
     /*margin-left: 120px;*/
 }
 
-.mt table
-{
+.mt table {
     table-layout: fixed;
 
-
 }
-.mt th
-{
+
+.mt th {
     /*height: 40px;*/
     white-space: nowrap;
     border-style: groove;
@@ -164,8 +165,8 @@ button
     border-radius: 10px;
 
 }
-.mt td
-{
+
+.mt td {
     vertical-align: text-bottom;
     /*height: 30px;*/
     white-space: nowrap;
@@ -180,6 +181,7 @@ button
     /*position: fixed;*/
     /*left: 5px*/
 }
+
 .mt td:first-child {
     width: 100px;
 
@@ -187,8 +189,7 @@ button
     /*left: 5px*/
 }
 
-.fixedcell
-{
+.fixedcell {
     height: 30px;
     width: 70px;
 
@@ -196,20 +197,20 @@ button
 
 /* unvisited link */
 a:link {
-    color: #f8f8f8;
+    color: #000000;
 }
 
 /* visited link */
 a:visited {
-    color: #F8F8F8;
+    color: #000000;
 }
 
 /* mouse over link */
 a:hover {
-    color: #F8F8F8;
+    color: #353535;
 }
 
 /* selected link */
 a:active {
-    color: #F8F8F8;
+    color: #000000;
 }

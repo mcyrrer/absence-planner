@@ -26,7 +26,7 @@ class ApprovalSet
         $state=$dbM->escape($con,$state);
 
         $sql = "UPDATE events SET approved = ".$state.",approvedBy='" . $manager . "' WHERE id = " . $eventId;
-        $this->logger->addInfo("Updated event ".$eventId." for user Id ".$userId." to ". $state,array(__FILE__, __LINE__));
+        $this->logger->addInfo("Updated event ".$eventId." for event id ".$eventId." to ". $state,array(__FILE__, __LINE__));
 
 
         $result = mysqli_query($con, $sql);

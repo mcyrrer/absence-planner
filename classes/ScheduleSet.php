@@ -105,14 +105,14 @@ class ScheduleSet
      * @param $state
      * @return array
      */
-    private function insertOneDayToDb($user, $date, $con, $state)
+    public function insertOneDayToDb($user, $date, $con, $state)
     {
         $result = $this->getAllEventsForADay($user, $date, $con);
 
         if (mysqli_num_rows($result) > 0) {
             $sql = $this->eventAlreadyExistInDb($user, $date, $state);
         } elseif (strcmp($state, 'none') == 0) {
-            self::$logger->addDebug('type is none but there is no record of this date in db so nothing will be done.: ', array(__FILE__, __LINE__));
+            self::$logger->addDebug('type is none but there is no record of this date in db so nothing will be done. ('. $user . " " . $date.")", array(__FILE__, __LINE__));
             return;
         } else {
             $sql = $this->insertEvent($user, $date, $state);
@@ -127,7 +127,7 @@ class ScheduleSet
      */
     private function deleteEvent($user, $date)
     {
-        self::$logger->addDebug('Delete of event: ' . self::$user . ' ' . $date, array(__FILE__, __LINE__));
+        self::$logger->addDebug('Delete of event: ' . $user . ' ' . $date, array(__FILE__, __LINE__));
         $sql = "DELETE FROM events WHERE user = '$user' AND eventDate = '$date'";
         return $sql;
     }
@@ -140,7 +140,7 @@ class ScheduleSet
      */
     private function updateEvent($user, $date, $state)
     {
-        self::$logger->addDebug('Update of event: ' . self::$user . ' ' . $date, array(__FILE__, __LINE__));
+        self::$logger->addDebug('Update of event for ' . $user . ' ' . $date. " to ". $state, array(__FILE__, __LINE__));
 
         $sql = "UPDATE events  SET type = '$state', approved=0 WHERE user = '$user' AND eventDate = '$date'";
         return $sql;

@@ -19,7 +19,7 @@ HtmlIncludes::header();
                 <option value="vacation">Vacation</option>
                 <option value="course">Course</option>
                 <option value="parental">Parental/ leave</option>
-                <option value="none">Clean dates</option>
+                <option value="none">Clear dates</option>
             </select></p>
             <p>
                 <label for="from">from</label>
@@ -36,6 +36,7 @@ HtmlIncludes::header();
             </p>
             <p>
                 <button id="addToCalendar">Add to calendar</button>
+                <div id="loadingBatchCalendar"></div>
             </p>
         </div>
     </div>

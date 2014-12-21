@@ -15,12 +15,14 @@ $(document).ready(function () {
             var date = calEvent.start;
             eventClick(date, $(this));
         }
-    })
+    });
 
     $('#addToCalendar').click(function () {
         var from = $('#from').val();
         var to = $('#to').val();
         var state = $('#type').val();
+        $("#loadingBatchCalendar").html('<div class="center"><img src="pictures/loading2.gif"></div>');
+
         $.ajax({
             type: "POST",
             url: 'api/schedule/set/index.php',
@@ -34,7 +36,11 @@ $(document).ready(function () {
                     alert("Could not save data");
                 }
             }
-        });
+        })
+            .done(function (html) {
+                $("#loadingBatchCalendar").html('');
+
+            });
     });
 
     $('#test').click(function () {
@@ -44,7 +50,8 @@ $(document).ready(function () {
         })
             .done(function (html) {
                 $("#tblr").html(html);
-                $('#myTable01').fixedHeaderTable({ footer: true,
+                $('#myTable01').fixedHeaderTable({
+                    footer: true,
                     cloneHeadToFoot: true,
                     altClass: 'odd',
                     autoShow: false,
@@ -56,8 +63,7 @@ $(document).ready(function () {
 
 });
 
-function getApprovalToDo()
-{
+function getApprovalToDo() {
     $.ajax({
         type: "GET",
         url: 'api/approval/get/index.php',
@@ -69,12 +75,12 @@ function getApprovalToDo()
         success: function (data) {
             var returnedData = JSON.parse(data);
             $('.box').html("");
-            $.each(returnedData,function(i,eventObjects){
+            $.each(returnedData, function (i, eventObjects) {
 
-                $('.box').append(eventObjects[0]['fullname']+"["+eventObjects[0]['username']+"] <span class='link' onclick='javascript: approvalSetAll(\""+eventObjects[0]['user']+"\", 1);'>[Approve all]</span><br>");
+                $('.box').append(eventObjects[0]['fullname'] + "[" + eventObjects[0]['user'] + "] <span class='link' onclick='javascript: approvalSetAll(\"" + eventObjects[0]['user'] + "\", 1);'>[Approve all]</span><span class='link' onclick='approvalSetAll(\"" + eventObjects[0]['user'] + "\", -1);'>[Deny all]</span><br>");
 
-                $.each(eventObjects,function(i,aEventObject){
-                    $('.box').append("[<span class='link'> Approve</span>] [<span class='link'>Deny</span>] "+aEventObject["date"]+" " +aEventObject["title"]+" " +aEventObject["approvalStatus"]+"<br>");
+                $.each(eventObjects, function (i, aEventObject) {
+                    $('.box').append("[<span class='link'> Approve</span>] [<span class='link'>Deny</span>] " + aEventObject["date"] + " " + aEventObject["title"] + " " + aEventObject["approvalStatus"] + "<br>");
                 });
                 $('.box').append('<br>');
 
@@ -84,6 +90,7 @@ function getApprovalToDo()
 }
 
 function approvalSetAll(user, state) {
+    $(event.target).html('<img src="pictures/loading3.gif">');
     $.ajax({
         type: "POST",
         url: "api/approval/set/index.php",

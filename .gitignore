@@ -8,3 +8,5 @@
 /unittest/testresult.txt
 /unittest/LOGFILEUNITTEST
 /unittest/unittest.log
+/setup/testdata/dev.csv
+/setup/testdata/parseIntoDb.php

@@ -18,12 +18,17 @@ HtmlIncludes::header();
             getApprovalToDo();
         });
     </script>
+    <div class="container_12">
+        <div class="grid_11">
+            <h1>Approval manager</h1>
+        </div>
+        <div class="box">
 
-
-    <div class="box">
-
-
+            <div class="center"><img src="pictures/loading.gif"></div>
+        </div>
     </div>
+
+
 
 
 <?php

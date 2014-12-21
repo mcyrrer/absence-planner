@@ -33,7 +33,7 @@ class HtmlIncludes
 </head>
 
 <body>
-<div class="header"><img src="pictures/logo.png"> Vacation sheet (not Google drive....!!!!)</div>
+<div class="header"><img src="pictures/logo.png"> Vacation manager</div>
 <div class="menu">[<a href="setup/testusers.php">SETUSER</a>]['.$_SESSION['user'].' - '.$_SESSION['manager'].'] <a href="batch.php">Batch add</a> | <a href="index.php">Single day add</a>  | <a href="overview.php">Overview</a> | <a href="approval.php">Approval manager</a></div>
     ';
     }

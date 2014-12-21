@@ -1,7 +1,9 @@
 {
     "require": {
         "monolog/monolog": "1.0.*",
-        "phpunit/phpunit": "4.3.5@dev"
+        "phpunit/phpunit": "4.3.5@dev",
+        "anahkiasen/underscore-php": "1.3.0",
+        "nesbot/carbon": "*",
+        "fzaninotto/faker": "1.5.x-dev"
     }
-}    
-	
+}
