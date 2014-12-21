@@ -42,7 +42,7 @@ body {
 }
 
 .explainBoxes {
-    margin: 30px;
+    margin: 10px;
 }
 
 .info {
@@ -87,7 +87,7 @@ body {
     padding-top: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    padding-bottom: 30px;
+    padding-bottom: 10px;
 }
 
 .wizard {

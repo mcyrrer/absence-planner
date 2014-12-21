@@ -6,7 +6,7 @@ require '../../classes/DateHelper.php';
 require '../../settings.inc';
 
 $c = new createtestdata();
-$c->createTestData(5, 10);
+$c->createTestData(100, 5000);
 
 
 class createtestdata
@@ -32,14 +32,15 @@ class createtestdata
 
     public function createTestData($managecount, $userCount)
     {
+        $faker = Faker\Factory::create();
         echo 'Truncate all database tables';
         $this->names = $this->getNames();
         mysqli_query($this->con, 'truncate table users;');
         mysqli_query($this->con, 'truncate table teams;');
         mysqli_query($this->con, 'truncate table mangers;');
         mysqli_query($this->con, 'truncate table events;');
-        $this->createManager($managecount);
-        $this->createUsers($userCount, $managecount);
+        $this->createManager($managecount,$faker);
+        $this->createUsers($userCount, $managecount,$faker);
         $this->createTestEvents();
         $this->createOneUser(9999, 'testuser', 'Surname Lastname', '', '1');
 
@@ -55,13 +56,13 @@ class createtestdata
 
         $begin = new DateTime(date('Y-m-d', time()));
         $end = new DateTime(date('Y-m-d', time()));
-        $end = $end->modify('+3 month');
+        $end = $end->modify('+48 month');
 
         $interval = new DateInterval('P1D');
         $daterange = new DatePeriod($begin, $interval, $end);
 
         foreach ($daterange as $aDate) {
-            for ($i = 0; $i < 1; $i++) {
+            for ($i = 0; $i < 50; $i++) {
                 $state = $stateArray[rand(0, count($stateArray) - 1)];
                 $user = $this->userNames[rand(0, count($this->userNames) - 1)];
                 $result = $this->insertOneDayToDbMocker($user, $aDate->format("Ymd"), $state);
@@ -70,17 +71,20 @@ class createtestdata
         }
     }
 
-    private function createManager($numberOfManager)
+    private function createManager($numberOfManager, $faker)
     {
-        for ($i = 0; $i <= $numberOfManager; $i++) {
-            $sName = $this->generateRandomName();
-            $lName = $this->generateRandomName();
-            $uName = $this->generateRandomName();
 
-            $name = $sName . ' ' . $lName . '(MANAGER)';
+        for ($i = 0; $i <= $numberOfManager; $i++) {
+            $lName = $faker->lastName;
+            $fName = $faker->firstName;
+            $uName = $faker->uuid;
+
+            $name = $fName . ' ' . $lName . '(MANAGER)';
+            $name = mysqli_real_escape_string($this->con,$name);
             $this->createOneUser($i, $uName, $name, 'Mangers', '-');
 
             self::$managerArray[] = $uName;
+
             $sql = "INSERT
                 INTO
                     mangers
@@ -101,19 +105,23 @@ class createtestdata
         }
     }
 
-    private function createUsers($numberOfUses, $managecount)
+
+    private function createUsers($numberOfUses, $managecount, $faker)
     {
 
         $managecount = $managecount + 1;
         for ($i = 0; $i <= $numberOfUses; $i++) {
-            $lName = $this->generateRandomName();
-            $uName = $this->generateRandomName();
+
+            $lName = $faker->lastName;
+            $fName = $faker->firstName;
+            $uName = $faker->uuid;
             $managerID = rand(0, count(self::$managerArray) - 1);
             $manager = self::$managerArray[$managerID];
-            $name = $uName . ' ' . $lName . '(' . $manager . ')';
+            $name = $fName . ' ' . $lName . '(' . $manager . ')';
 
+            $name = mysqli_real_escape_string($this->con,$name);
 
-            echo "Manager : " . $manager;
+           // echo "Manager : " . $manager;
             $team = "A-team";
             $id = $i + 100;
 
@@ -131,7 +139,7 @@ class createtestdata
                 INTO
                     users
                     (
-                        id,
+
                         username,
                         fullname,
                         team,
@@ -139,7 +147,7 @@ class createtestdata
                     )
                     VALUES
                     (
-                        " . $id . ",
+
                         '" . $username . "',
                         '" . $fullname . "',
                         '" . $team . "',

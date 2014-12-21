@@ -9,11 +9,12 @@ $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::W
 
 
 HtmlIncludes::header();
+//TODO: Take care if pagination of groupnext with team and manager
 ?>
 
     <script>
+        var offset = 0;
         $(document).ready(function () {
-
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 cache: false
@@ -35,6 +36,10 @@ HtmlIncludes::header();
         });
 
         function generateOverviewTable(scheduleJson) {
+            var offsetNext = offset + 1;
+            var offsetPrev = offset - 1;
+            var offsetCurrent = offset;
+
             var firstDate = "";
             var lastDate = ""
             var html = "";
@@ -44,16 +49,29 @@ HtmlIncludes::header();
             html += '<table class="fancyTable" id="myTable01">';
             html += '<thead>';
             html += '<tr>';
-            html += '<th class="thItem">AName</th>';
+            html += '<th class="thItem">Name</th>';
             html += '<th class="thItem">Team</th>';
             html += '<th class="thItem">Manager</th>';
             firstDate = dates[0].replace(" ", "-").replace(" ", "-");
             lastDate = dates[dates.length - 1].replace(" ", "-").replace(" ", "-");
-            var jsCodePrev = 'onClick="getPrevPage(\'' + firstDate + '\')";';
-            var jsCodeNext = 'onClick="getNextPage(\'' + lastDate + '\')";';
+            var jsCodePrev = 'onClick="getPrevPage(\'' + firstDate + '\', ' + offsetCurrent + ')";';
+            var jsCodeNext = 'onClick="getNextPage(\'' + lastDate + '\', ' + offsetCurrent + ')";';
 
             $('#prev').html("<span class='link' " + jsCodePrev + "><img src='pictures/14-32.png'></span>");
             $('#next').html("<span class='link' " + jsCodeNext + "><img src='pictures/12-32.png'></span>");
+
+            $('#nextGroup').html("");
+            $('#prevGroup').html("");
+            var jsCodePrevGroup = 'onClick="getPrevPageGroup(\'' + firstDate + '\', ' + offsetPrev + ')";';
+            var jsCodeNextGroup = 'onClick="getNextPageGroup(\'' + firstDate + '\', ' + offsetNext + ')";';
+            if (Object.keys(schedules).length > 0) {
+                $('#nextGroup').html("<span class='link' " + jsCodeNextGroup + "><img src='pictures/20-32.png'></span>");
+            }
+            if (parseInt(offsetCurrent) > 0) {
+                $('#prevGroup').html("<span class='link' " + jsCodePrevGroup + "><img src='pictures/9-32.png'></span>");
+            }
+
+
             $.each(dates, function (index, value) {
                 html += '<th>' + value + '</th>';
             });
@@ -98,13 +116,26 @@ HtmlIncludes::header();
             return html;
         }
 
-        function getPrevPage(from) {
+        function getPrevPageGroup(from, lOffset) {
+
+            offset = lOffset;
+
+            getNextPage(from, offset);
+        }
+
+        function getNextPageGroup(from, lOffset) {
+            offset = offset + 1;
+            getNextPage(from, offset);
+        }
+
+        function getPrevPage(from, offset) {
             $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 data: {
-                    fromend: from
+                    fromend: from,
+                    offset: offset
                 },
                 cache: false
             })
@@ -124,13 +155,14 @@ HtmlIncludes::header();
                 });
         }
 
-        function getNextPage(from) {
+        function getNextPage(from, offset) {
             $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 data: {
-                    from: from
+                    from: from,
+                    offset: offset
                 },
                 cache: false
             })
@@ -150,14 +182,15 @@ HtmlIncludes::header();
                 });
         }
 
-        function getTeamOverview(team) {
+        function getTeamOverview(team, offset) {
             $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 data: {
                     type: "TEAM",
-                    typedata: team
+                    typedata: team,
+                    offset: offset
                 },
                 cache: false
             })
@@ -176,14 +209,15 @@ HtmlIncludes::header();
 
                 });
         }
-        function getManagerOverview(manager) {
+        function getManagerOverview(manager, offset) {
             $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 data: {
                     type: "MANAGER",
-                    typedata: manager
+                    typedata: manager,
+                    offset: offset
                 },
                 cache: false
             })
@@ -197,11 +231,11 @@ HtmlIncludes::header();
     </script>
 
     <div class="box">
-
+                <span><span id="prev"></span><span id="next"></span><span id="nextGroup"></span><span
+                        id="prevGroup"></span></span>
         <div class="container_12">
             <div class="grid_11">
-                <h1>Overview</h1>
-                <span><span id="prev"></span><span id="next"></span></span>
+
             </div>
             <div id="tblr" class="grid_11 height800">
                 <div class="center"><img src="pictures/loading.gif"></div>

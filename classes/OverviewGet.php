@@ -12,7 +12,9 @@ class OverviewGet
 {
     private $logger;
 
-    const DEFAULT_DATE_RANGE = 90;
+    const DEFAULT_DATE_RANGE = 40;
+
+    const OVERVIEW_ROW_LIMIT = 20;
 
     function __construct()
     {
@@ -25,82 +27,50 @@ class OverviewGet
         $dbM = new DbHelper();
         $con = $dbM->connectToMainDb();
 
-        if (isset($_REQUEST['from'])) {
-            $from = $dbM::escape($con, $_REQUEST['from']);
-            $fromSlice = explode("-",$from);
-            $cFrom = Carbon::createFromDate($fromSlice[0],$fromSlice[1],$fromSlice[2]);
-            $this->logger->addDebug("from is  " . $_REQUEST['from'], array(__FILE__, __LINE__));
-            $this->logger->addDebug("Setting start date to  " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
+        $cFrom = $this->getFromDate($dbM, $con);
 
-        }elseif (isset($_REQUEST['fromend'])) {
-            $from = $dbM::escape($con, $_REQUEST['fromend']);
-            $fromSlice = explode("-",$from);
-            $cFrom = Carbon::createFromDate($fromSlice[0],$fromSlice[1],$fromSlice[2]);
-            $this->logger->addDebug("from is  " . $_REQUEST['fromend'], array(__FILE__, __LINE__));
-            $this->logger->addDebug("Setting start date to  " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
+        $cEnd = Carbon::createFromFormat('Y-m-d', $cFrom->toDateString());
 
-        } else {
-            $from = date('Y-m-d', time());
-            $fromSlice = explode("-",$from);
-            $cFrom = Carbon::createFromDate($fromSlice[0],$fromSlice[1],$fromSlice[2]);
-            $cFrom->addDays(-3);
-            $this->logger->addDebug("Setting start date to  " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
-
-        }
-
-
-        if (isset($_REQUEST['fromend'])) {
-            $this->logger->addDebug("set date to -60 days from " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
-            $cFrom = $cFrom->addDays(-self::DEFAULT_DATE_RANGE);
-            $this->logger->addDebug("Date is now " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
-        }
-
-        $cEnd = Carbon::createFromFormat('Y-m-d',$cFrom->toDateString());
-        if (isset($_REQUEST['range'])) {
-            $this->logger->addDebug("End was ". $cEnd->toDateString(), array(__FILE__, __LINE__));
-            $range = $dbM::escape($con, $_REQUEST['range']);
-            $cEnd->addDays($range);
-            $this->logger->addDebug("End is ". $cEnd->toDateString(), array(__FILE__, __LINE__));
-
-        } else {
-            $this->logger->addDebug("End was ". $cEnd->toDateString(), array(__FILE__, __LINE__));
-            $cEnd->addDays(self::DEFAULT_DATE_RANGE+2);
-            $this->logger->addDebug("End is ". $cEnd->toDateString(), array(__FILE__, __LINE__));
-
-        }
-
-        if (isset($_REQUEST['type'])) {
-            if (isset($_REQUEST['typedata'])) {
-                $type = $dbM::escape($con, $_REQUEST['type']);
-                $typedata = $dbM::escape($con, $_REQUEST['typedata']);
-            } else {
-                $this->logger->addError("typedata not set in request, will return ALL", array(__FILE__, __LINE__));
-                $type = "ALL";
-                $typedata = null;
+        //
+        if (isset($_REQUEST['offset'])) {
+            $offset = $dbM::escape($con, $_REQUEST['offset']);
+            if($offset<0)
+            {
+                $this->logger->addWarning("Offset is less then 0 (is ".$offset."), setting it to 0  " . $offset, array(__FILE__, __LINE__));
+                $offset=0;
             }
         } else {
-            $type = "ALL";
-            $typedata = null;
+            $offset = 0;
         }
-        return $this->getOverviewViewArray($con, $cFrom, $cEnd, $type, $typedata);
+
+        $offset = $offset*self::OVERVIEW_ROW_LIMIT;
+        $this->logger->addInfo("Generating overview based on offset  " . $offset, array(__FILE__, __LINE__));
+
+
+        //
+        $this->setRangeForDatePeriod($cEnd, $dbM, $con);
+
+        list($type, $typedata) = $this->getTypeOfDataToReturn($dbM, $con);
+
+        return $this->getOverviewViewArray($con, $cFrom, $cEnd, $type, $typedata, $offset);
     }
 
 
     /**
      * @param $con
-     * @param $begin
-     * @param $end
+     * @param Carbon $begin
+     * @param Carbon $end
      * @param $subOverviewKind [ALL][TEAM][MANAGER]
-     * @param $subValue value belonging to $subOverviewKind
+     * @param $subValue
      * @return mixed
      */
-    private function getOverviewViewArray($con, Carbon $begin, Carbon $end, $subOverviewKind, $subValue = null)
+    private function getOverviewViewArray($con, Carbon $begin, Carbon $end, $subOverviewKind, $subValue, $offset)
     {
         $this->logger->addInfo("Get overview schedule from " . $begin->toDateString() . " to " . $end->toDateString() . " for " . $subOverviewKind, array(__FILE__, __LINE__));
 
         $interval = new DateInterval('P1D');
-        $b=new DateTime($begin->toDateString());
-        $e=new DateTime($end->toDateString());
+        $b = new DateTime($begin->toDateString());
+        $e = new DateTime($end->toDateString());
         $daterange = new DatePeriod($b, $interval, $e);
 
         $dates = array();
@@ -113,20 +83,12 @@ class OverviewGet
             }
         }
 
-//        foreach ($daterange as $aDate) {
-//            $cDay  = Carbon::createFromDate($aDate->format("Y"),$aDate->format("m"),$aDate->format("d"));
-//            if ($cDay->isWeekend()) {
-//                $dates[] = $aDate->format("Y m d");
-//            }
-//        }
-
-
         if (String::is("ALL", $subOverviewKind)) {
-            $resultUser = $this->getAllUsers($con);
+            $resultUser = $this->getAllUsers($con, $offset);
         } elseif (String::is("TEAM", $subOverviewKind)) {
-            $resultUser = $this->getAllUsersInTeam($con, $subValue);
+            $resultUser = $this->getAllUsersInTeam($con, $subValue, $offset);
         } elseif (String::is("MANAGER", $subOverviewKind)) {
-            $resultUser = $this->getAllUsersBasedOnManager($con, $subValue);
+            $resultUser = $this->getAllUsersBasedOnManager($con, $subValue, $offset);
         } else {
             $this->logger->addError("ERROR: wrong kind of subquery kind, should be one of ALL,TEAM,MANAGER buw was " . $subOverviewKind, array(__FILE__, __LINE__));
         }
@@ -151,9 +113,9 @@ class OverviewGet
 
     private function getUserScheduleFromDb($rowUser, $begin, $end, $con)
     {
-        //$this->logger->debug("Get user schedule " . $rowUser['username'], array(__FILE__, __LINE__));
 
         $sqlUserSchedule = "SELECT * FROM events WHERE user='" . $rowUser['username'] . "' AND eventDate >= '" . $begin->format("Y-m-d") . "' AND eventDate < '" . $end->format("Y-m-d") . "'";
+
         $resultUseSchedule = mysqli_query($con, $sqlUserSchedule);
         $useSchedule = mysqli_fetch_all($resultUseSchedule, MYSQLI_ASSOC);
         return $useSchedule;
@@ -184,26 +146,110 @@ class OverviewGet
      * @param $con
      * @return bool|mysqli_result
      */
-    private function getAllUsers($con)
+    private function getAllUsers($con, $offset)
     {
-        $sqlUser = 'SELECT * FROM users';
+        $sqlUser = 'SELECT * FROM users LIMIT '.$offset. ',' . self::OVERVIEW_ROW_LIMIT . '';
         $resultUser = mysqli_query($con, $sqlUser);
         return $resultUser;
 
     }
 
-    private function getAllUsersInTeam($con, $team)
+    private function getAllUsersInTeam($con, $team, $offset)
     {
-        $sqlUser = 'SELECT * FROM users WHERE team="' . $team . '"';
+        $sqlUser = 'SELECT * FROM users WHERE team="' . $team . '"  LIMIT '.$offset. ',' . self::OVERVIEW_ROW_LIMIT . '';
+        $this->logger->debug($sqlUser, array(__FILE__, __LINE__));
         $resultUser = mysqli_query($con, $sqlUser);
         return $resultUser;
     }
 
-    private function getAllUsersBasedOnManager($con, $manager)
+    private function getAllUsersBasedOnManager($con, $manager, $offset)
     {
-        $sqlUser = 'SELECT * FROM users WHERE manager="' . $manager . '"';
+        $sqlUser = 'SELECT * FROM users WHERE manager="' . $manager . '"  LIMIT '.$offset. ',' . self::OVERVIEW_ROW_LIMIT . '';
+        $this->logger->add($sqlUser, array(__FILE__, __LINE__));
         $resultUser = mysqli_query($con, $sqlUser);
         return $resultUser;
+    }
+
+    /**
+     * @param $dbM
+     * @param $con
+     * @return Carbon date
+     */
+    private function getFromDate($dbM, $con)
+    {
+        if (isset($_REQUEST['from'])) {
+            $from = $dbM::escape($con, $_REQUEST['from']);
+            $fromSlice = explode("-", $from);
+            $cFrom = Carbon::createFromDate($fromSlice[0], $fromSlice[1], $fromSlice[2]);
+            $this->logger->addDebug("from is  " . $_REQUEST['from'], array(__FILE__, __LINE__));
+            $this->logger->addDebug("Setting start date to  " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
+
+        } elseif (isset($_REQUEST['fromend'])) {
+            $from = $dbM::escape($con, $_REQUEST['fromend']);
+            $fromSlice = explode("-", $from);
+            $cFrom = Carbon::createFromDate($fromSlice[0], $fromSlice[1], $fromSlice[2]);
+            $this->logger->addDebug("from is  " . $_REQUEST['fromend'], array(__FILE__, __LINE__));
+            $this->logger->addDebug("Setting start date to  " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
+
+        } else {
+            $from = date('Y-m-d', time());
+            $fromSlice = explode("-", $from);
+            $cFrom = Carbon::createFromDate($fromSlice[0], $fromSlice[1], $fromSlice[2]);
+            $cFrom->addDays(-3);
+            $this->logger->addDebug("Setting start date to  " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
+        }
+        if (isset($_REQUEST['fromend'])) {
+            $this->logger->addDebug("set date to -60 days from " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
+            $cFrom = $cFrom->addDays(-self::DEFAULT_DATE_RANGE);
+            $this->logger->addDebug("Date is now " . $cFrom->toFormattedDateString(), array(__FILE__, __LINE__));
+            return $cFrom;
+        }
+        return $cFrom;
+    }
+
+    /**
+     * @param $cEnd
+     * @param $dbM
+     * @param $con
+     */
+    private function setRangeForDatePeriod($cEnd, $dbM, $con)
+    {
+        if (isset($_REQUEST['range'])) {
+            $this->logger->addDebug("End was " . $cEnd->toDateString(), array(__FILE__, __LINE__));
+            $range = $dbM::escape($con, $_REQUEST['range']);
+            $cEnd->addDays($range);
+            $this->logger->addDebug("End is " . $cEnd->toDateString(), array(__FILE__, __LINE__));
+
+        } else {
+            $this->logger->addDebug("End was " . $cEnd->toDateString(), array(__FILE__, __LINE__));
+            $cEnd->addDays(self::DEFAULT_DATE_RANGE + 2);
+            $this->logger->addDebug("End is " . $cEnd->toDateString(), array(__FILE__, __LINE__));
+        }
+    }
+
+    /**
+     * @param $dbM
+     * @param $con
+     * @return array
+     */
+    private function getTypeOfDataToReturn($dbM, $con)
+    {
+        if (isset($_REQUEST['type'])) {
+            if (isset($_REQUEST['typedata'])) {
+                $type = $dbM::escape($con, $_REQUEST['type']);
+                $typedata = $dbM::escape($con, $_REQUEST['typedata']);
+                return array($type, $typedata);
+            } else {
+                $this->logger->addError("typedata not set in request, will return ALL", array(__FILE__, __LINE__));
+                $type = "ALL";
+                $typedata = null;
+                return array($type, $typedata);
+            }
+        } else {
+            $type = "ALL";
+            $typedata = null;
+            return array($type, $typedata);
+        }
     }
 }
 
