@@ -15,23 +15,39 @@ class setupData
     public $day1;
     public $day2;
     public $day3;
+    private $logger;
 
 
     public function insertScheduleToDb($dbh)
     {
-        self::$username = self::generateRandomString(4);
-        self::$team = self::generateRandomString(4);
-        self::$manager = self::generateRandomString(4);
+        $faker = Faker\Factory::create();
+        self::$username = $faker->firstName.$faker->lastName;
+        self::$team = "Team " . self::$username;
+        self::$manager = $faker->firstName.$faker->lastName;
+        $l = new Logging();
+        $logger = $l->getLoggerTest();
 
         //setup user
         $sql = "DELETE FROM events";
-        mysqli_query($dbh, $sql);
+        $result=mysqli_query($dbh, $sql);
+        if ($result == false) {
+            // @codeCoverageIgnoreStart
+            $logger->addError('Error in sql: ' . $sql);
+        }
 
         $sql = "DELETE FROM users";
-        mysqli_query($dbh, $sql);
+        $result=mysqli_query($dbh, $sql);
+        if ($result == false) {
+            // @codeCoverageIgnoreStart
+            $logger->addError('Error in sql: ' . $sql);
+        }
 
         $sql = "INSERT INTO users (username, fullname, team, manager ) VALUES ('" . self::$username . "', 'TEST USER', '" . self::$team . "', '" . self::$manager . "' )";
-        mysqli_query($dbh, $sql);
+        $result=mysqli_query($dbh, $sql);
+        if ($result == false) {
+            // @codeCoverageIgnoreStart
+            $logger->addError('Error in sql: ' . $sql);
+        }
 
         //setup testevent
 
@@ -39,11 +55,19 @@ class setupData
 
 
         $sql = "INSERT INTO events ( type, user, eventDate ) VALUES ( 'vacation', '" . self::$username . "', '" . $this->day1 . "' ), ( 'course', '" . self::$username . "', '" . $this->day2 . "' ), ( 'parental', '" . self::$username . "', '" . $this->day3 . "' )";
-        mysqli_query($dbh, $sql);
+        $result=mysqli_query($dbh, $sql);
+        if ($result == false) {
+            // @codeCoverageIgnoreStart
+            $logger->addError('Error in sql: ' . $sql);
+        }
 
         //setup manager
         $sql = "INSERT INTO users (username, fullname, team, manager ) VALUES ('" . self::$manager . "', 'Test Manager', 'Management', '-' )";
-        mysqli_query($dbh, $sql);
+        $result=mysqli_query($dbh, $sql);
+        if ($result == false) {
+            // @codeCoverageIgnoreStart
+            $logger->addError('Error in sql: ' . $sql);
+        }
 
         return self::$username;
     }

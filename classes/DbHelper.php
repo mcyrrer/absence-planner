@@ -28,16 +28,33 @@ class DbHelper
 
     public function execQuery($con, $sql)
     {
+        $callingInfo[0] = debug_backtrace()[1]['function'];
+        $callingInfo[1] = debug_backtrace()[0]['file'];
+        $callingInfo[2] = debug_backtrace()[0]['line'];
+
+
         $before = microtime(true);
         $result = mysqli_query($con, $sql);
-        $rows = mysqli_num_rows($result);
         $after = microtime(true);
         $timeTaken = ($after - $before) * 1000;
-        if (SQL_PROFILING) {
-            $this->logger->addDebug("SQL [" . $sql . "] [rows:" . $rows . " " . mysqli_info($con) . "] [" . $timeTaken . "ms]");
+
+        if ($result == false) {
+            // @codeCoverageIgnoreStart
+            $this->logger->addError('Error in sql: ' . $sql);
+        }
+        else
+        {
+            if (SQL_PROFILING) {
+                if($result!=true) {
+                    $rows = mysqli_num_rows($result);
+                }
+                else
+                {
+                    $rows=0;
+                }
+                $this->logger->addDebug("SQL [" . $sql . "] [rows:" . $rows . " " . mysqli_info($con) . "] [" . $timeTaken . "ms]", $callingInfo);
+            }
         }
         return $result;
     }
 }
-
-?>

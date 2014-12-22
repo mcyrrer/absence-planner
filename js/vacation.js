@@ -18,19 +18,21 @@ $(document).ready(function () {
     });
 
     $('#addToCalendar').click(function () {
+        var formData = $("#batchForm").serializeArray();
         var from = $('#from').val();
         var to = $('#to').val();
-        var state = $('#type').val();
-        $("#loadingBatchCalendar").html('<div class="center"><img src="pictures/loading2.gif"></div>');
+        if (!from.trim() || !to.trim()) {
+            alert('From date and to date is mandatory.');
+            return;
+        }
+
+        //var state = $('#type').val();
+        $("#loadingBatchCalendar").html('<div class="center"><img src="pictures/loading3.gif"></div>');
 
         $.ajax({
             type: "POST",
             url: 'api/schedule/set/index.php',
-            data: {
-                from: from,
-                to: to,
-                state: state
-            },
+            data: formData,
             statusCode: {
                 500: function () {
                     alert("Could not save data");

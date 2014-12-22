@@ -14,8 +14,11 @@ HtmlIncludes::header();
 
     <div class="actionBox">
         <div class="wizard">
+            <form id="batchForm">
+
+
             <p>I want to have a few days of due to</p>
-            <select id="type">
+            <select id="state" name="state">
                 <option value="vacation">Vacation</option>
                 <option value="course">Course</option>
                 <option value="parental">Parental/ leave</option>
@@ -30,23 +33,17 @@ HtmlIncludes::header();
 
 
             </p>
-
-            <p>
-            </p>
-
-            <p>
-            </p>
-
             <p class="left">
                 Every:<br>
-                <input type="checkbox" id="Monday" checked>Monday
-                <input type="checkbox" id="Tuesday" checked>Tuesday
-                <input type="checkbox" id="Wednesday" checked>Wednesday
-                <input type="checkbox" id="Thursday" checked>Thursday
-                <input type="checkbox" id="Friday" checked>Friday
-                <input type="checkbox" id="Saturday" checked>Saturday
-                <input type="checkbox" id="Sunday" checked>Sunday
+                <input type="checkbox" name="Monday" value="1" checked>Monday
+                <input type="checkbox" name="Tuesday" value="1" checked>Tuesday
+                <input type="checkbox" name="Wednesday" value="1" checked>Wednesday
+                <input type="checkbox" name="Thursday" value="1" checked>Thursday
+                <input type="checkbox" name="Friday" value="1" checked>Friday
+                <input type="checkbox" name="Saturday" value="1" checked>Saturday
+                <input type="checkbox" name="Sunday" value="1" checked>Sunday
             </p>
+            </form>
 
             <p>
                 <button id="addToCalendar">Add to calendar</button>

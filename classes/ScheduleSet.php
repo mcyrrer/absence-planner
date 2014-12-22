@@ -9,6 +9,7 @@ class ScheduleSet
 {
     protected static $logger;
     protected static $user;
+    var $dbM;
 
     function __construct()
     {
@@ -19,11 +20,12 @@ class ScheduleSet
     public function setUserSchedule($user)
     {
         self::$user = $_SESSION['user'];
-        $dbM = new DbHelper();
+        $this->dbM = new DbHelper();
         $dateH = new DateHelper();
-        $con = $dbM->connectToMainDb();
+        $con = $this->dbM->connectToMainDb();
 
-        list($date, $from, $to) = $this->parseRequestParameters($dbM, $con);
+
+        list($date, $from, $to) = $this->parseRequestParameters($con);
 
         $datesToCheck = array();
         if (isset($date)) {
@@ -53,7 +55,7 @@ class ScheduleSet
 
         if (isset($_REQUEST['state'])) {
             $stateUnsecure = $_REQUEST['state'];
-            $state = $dbM->escape($con, $stateUnsecure);
+            $state = $this->dbM->escape($con, $stateUnsecure);
             unset($stateUnsecure);
         } else {
             self::$logger->addError('state is no set: ', array(__FILE__, __LINE__));
@@ -141,7 +143,6 @@ class ScheduleSet
     private function updateEvent($user, $date, $state)
     {
         self::$logger->addDebug('Update of event for ' . $user . ' ' . $date. " to ". $state, array(__FILE__, __LINE__));
-
         $sql = "UPDATE events  SET type = '$state', approved=0 WHERE user = '$user' AND eventDate = '$date'";
         return $sql;
     }
@@ -156,8 +157,6 @@ class ScheduleSet
     {
 
         $sql = "INSERT INTO events (type, user, eventDate) VALUES ('$state','$user','$date') ";
-        self::$logger->addDebug($sql, array(__FILE__, __LINE__));
-
         return $sql;
     }
 
@@ -181,11 +180,12 @@ class ScheduleSet
     /**
      * @param $con
      * @param $sql
+     * @return int
      */
     private function evaluateSqlResult($con, $sql)
     {
         if (isset($sql)) {
-            $result = mysqli_query($con, $sql);
+            $result = $this->dbM->execQuery($con, $sql);
             if ($result == false) {
                 // @codeCoverageIgnoreStart
                 self::$logger->addError('Error in sql: ' . $sql, array(__FILE__, __LINE__));
@@ -208,31 +208,32 @@ class ScheduleSet
      */
     private function getAllEventsForADay($user, $date, $con)
     {
-        $sqlCheck = "SELECT * FROM `vacation`.`events` WHERE user='$user' and eventDate='$date'";
-        $result = mysqli_query($con, $sqlCheck);
+        $sqlCheck = "SELECT * FROM vacation.events WHERE user='$user' and eventDate='$date'";
+        $result = $this->dbM->execQuery($con, $sqlCheck);
         return $result;
     }
 
     /**
-     * @param $dbM
      * @param $con
-     * @param $dateUnsecure
+     * @return array|int
+     * @internal param $dbM
+     * @internal param $dateUnsecure
      */
-    private function parseRequestParameters($dbM, $con)
+    private function parseRequestParameters($con)
     {
         $date = null;
         $from = null;
         $to = null;
         if (isset($_REQUEST['date'])) {
             $dateUnsecure = $_REQUEST['date'];
-            $date = $dbM->escape($con, $dateUnsecure);
+            $date = $this->dbM->escape($con, $dateUnsecure);
             self::$logger->addInfo('Is single insert', array(__FILE__, __LINE__));
             return array($date, $from, $to);
         } elseif (isset($_REQUEST['from'], $_REQUEST['to']) && strcmp($_REQUEST['to'], "") != 0 && strcmp($_REQUEST['from'], "") != 0) {
             $fromUnsecure = $_REQUEST['from'];
             $toUnsecure = $_REQUEST['to'];
-            $from = $dbM->escape($con, $fromUnsecure);
-            $to = $dbM->escape($con, $toUnsecure);
+            $from = $this->dbM->escape($con, $fromUnsecure);
+            $to = $this->dbM->escape($con, $toUnsecure);
             unset($dateUnsecure);
             unset($toUnsecure);
             self::$logger->addInfo('Is multidate insert', array(__FILE__, __LINE__));

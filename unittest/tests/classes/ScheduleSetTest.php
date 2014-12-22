@@ -30,6 +30,7 @@ class ScheduleSetTest extends PHPUnit_Framework_TestCase
     {
         self::$dbh = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         self::$sd = new setupData();
+        self::$sd->insertScheduleToDb(self::$dbh);
         $sql = "DELETE FROM events WHERE user=" . self::$username;
         mysqli_query(self::$dbh, $sql);
         self::$username = microtime();
