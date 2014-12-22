@@ -10,3 +10,14 @@
 /unittest/unittest.log
 /setup/testdata/dev.csv
 /setup/testdata/parseIntoDb.php
+/vendor/nesbot
+/vendor/patchwork
+/vendor/phpunit
+/vendor/sebastian
+/vendor/symfony
+/vendor/anahkiasen
+/vendor/composer
+/vendor/doctrine
+/vendor/fzaninotto
+/vendor/illuminate
+/vendor/monolog
