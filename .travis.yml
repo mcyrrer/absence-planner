@@ -22,6 +22,8 @@ env:
 
 # execute any number of scripts before the test run, custom env's are available as variables
 before_script:
+  - travis_retry composer self-update
+  - travis_retry composer install --no-interaction --prefer-source --dev
   - if [[ "$DB" == "mysql" ]]; then mysql -uroot < setup/vacation_database.sql; fi
   - cp setup/settings.travis.inc settings.inc
   - cd unittest
