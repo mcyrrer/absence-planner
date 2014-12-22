@@ -1,4 +1,6 @@
 <?php
+use Underscore\Types\String;
+
 require_once BASEPATH.'/vendor/autoload.php';
 require_once BASEPATH.'/classes/autoloader.php';
 
@@ -15,12 +17,13 @@ class ScheduleSet
     {
         $l = new Logging();
         self::$logger = $l->getLogger();
+        $this->dbM = new DbHelper();
     }
 
     public function setUserSchedule($user)
     {
         self::$user = $_SESSION['user'];
-        $this->dbM = new DbHelper();
+
         $dateH = new DateHelper();
         $con = $this->dbM->connectToMainDb();
 
@@ -113,7 +116,7 @@ class ScheduleSet
 
         if (mysqli_num_rows($result) > 0) {
             $sql = $this->eventAlreadyExistInDb($user, $date, $state);
-        } elseif (strcmp($state, 'none') == 0) {
+        } elseif (String::is('none',$state) == 0) {
             self::$logger->addDebug('type is none but there is no record of this date in db so nothing will be done. ('. $user . " " . $date.")", array(__FILE__, __LINE__));
             return;
         } else {
