@@ -14,6 +14,9 @@ HtmlIncludes::header();
 
     <script>
         var offset = 0;
+        var typeOrRequest = "ALL";
+        var typeData = "";
+
         $(document).ready(function () {
             $.ajax({
                 url: "api/overview/get/index.php?json",
@@ -129,13 +132,17 @@ HtmlIncludes::header();
         }
 
         function getPrevPage(from, offset) {
+
+
             $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 data: {
                     fromend: from,
-                    offset: offset
+                    offset: offset,
+                    type: typeOrRequest,
+                    typedata: typeData
                 },
                 cache: false
             })
@@ -162,7 +169,9 @@ HtmlIncludes::header();
                 url: "api/overview/get/index.php?json",
                 data: {
                     from: from,
-                    offset: offset
+                    offset: offset,
+                    type: typeOrRequest,
+                    typedata: typeData
                 },
                 cache: false
             })
@@ -183,12 +192,15 @@ HtmlIncludes::header();
         }
 
         function getTeamOverview(team, offset) {
+
+            typeOrRequest= "TEAM";
+            typeData=team;
             $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 data: {
-                    type: "TEAM",
+                    type: typeOrRequest,
                     typedata: team,
                     offset: offset
                 },
@@ -209,20 +221,33 @@ HtmlIncludes::header();
 
                 });
         }
+
         function getManagerOverview(manager, offset) {
+            typeOrRequest= "MANAGER";
+            typeData = manager;
             $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
                 data: {
-                    type: "MANAGER",
+                    type: typeOrRequest,
                     typedata: manager,
                     offset: offset
                 },
                 cache: false
             })
                 .done(function (data) {
-                    $("#tblr").html('');
+                    var tableHtml = generateOverviewTable(data);
+
+                    $("#tblr").html(tableHtml);
+                    $('#myTable01').fixedHeaderTable({
+                        footer: true,
+                        cloneHeadToFoot: true,
+                        altClass: 'odd',
+                        autoShow: true,
+                        fixedColumns: 3
+                    });
+                    $('#myTable01').fixedHeaderTable('show');
 
                 });
         }

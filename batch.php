@@ -22,21 +22,35 @@ HtmlIncludes::header();
                 <option value="none">Clear dates</option>
             </select></p>
             <p>
-                <label for="from">from</label>
-            </p>
-            <p>
-                <input type="text" id="from" name="from" size="10" >
+
             </p>
 
             <p>
-                <label for="to">to</label>
+                <label for="from">from</label><input type="text" id="from" name="from" size="10"><label for="to">to</label>                <input type="text" id="to" name="to" size="10">
+
+
             </p>
+
             <p>
-                <input type="text" id="to" name="to" size="10">
             </p>
+
+            <p>
+            </p>
+
+            <p class="left">
+                Every:<br>
+                <input type="checkbox" id="Monday" checked>Monday
+                <input type="checkbox" id="Tuesday" checked>Tuesday
+                <input type="checkbox" id="Wednesday" checked>Wednesday
+                <input type="checkbox" id="Thursday" checked>Thursday
+                <input type="checkbox" id="Friday" checked>Friday
+                <input type="checkbox" id="Saturday" checked>Saturday
+                <input type="checkbox" id="Sunday" checked>Sunday
+            </p>
+
             <p>
                 <button id="addToCalendar">Add to calendar</button>
-                <div id="loadingBatchCalendar"></div>
+            <div id="loadingBatchCalendar"></div>
             </p>
         </div>
     </div>

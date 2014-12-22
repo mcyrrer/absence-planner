@@ -12,8 +12,8 @@ class OverviewGet
 {
     private $logger;
 
+    /*Overview page settings*/
     const DEFAULT_DATE_RANGE = 40;
-
     const OVERVIEW_ROW_LIMIT = 20;
 
     function __construct()
@@ -52,7 +52,7 @@ class OverviewGet
 
         list($type, $typedata) = $this->getTypeOfDataToReturn($dbM, $con);
 
-        return $this->getOverviewViewArray($con, $cFrom, $cEnd, $type, $typedata, $offset);
+        return $this->getOverviewViewArray($con, $cFrom, $cEnd, $type, $typedata, $offset, $dbM);
     }
 
 
@@ -64,7 +64,7 @@ class OverviewGet
      * @param $subValue
      * @return mixed
      */
-    private function getOverviewViewArray($con, Carbon $begin, Carbon $end, $subOverviewKind, $subValue, $offset)
+    private function getOverviewViewArray($con, Carbon $begin, Carbon $end, $subOverviewKind, $subValue, $offset, DbHelper $dbM)
     {
         $this->logger->addInfo("Get overview schedule from " . $begin->toDateString() . " to " . $end->toDateString() . " for " . $subOverviewKind, array(__FILE__, __LINE__));
 
@@ -84,17 +84,17 @@ class OverviewGet
         }
 
         if (String::is("ALL", $subOverviewKind)) {
-            $resultUser = $this->getAllUsers($con, $offset);
+            $resultUser = $this->getAllUsers($con, $dbM, $offset);
         } elseif (String::is("TEAM", $subOverviewKind)) {
-            $resultUser = $this->getAllUsersInTeam($con, $subValue, $offset);
+            $resultUser = $this->getAllUsersInTeam($con, $dbM, $subValue, $offset);
         } elseif (String::is("MANAGER", $subOverviewKind)) {
-            $resultUser = $this->getAllUsersBasedOnManager($con, $subValue, $offset);
+            $resultUser = $this->getAllUsersBasedOnManager($con, $dbM, $subValue, $offset);
         } else {
             $this->logger->addError("ERROR: wrong kind of subquery kind, should be one of ALL,TEAM,MANAGER buw was " . $subOverviewKind, array(__FILE__, __LINE__));
         }
         while ($rowUser = mysqli_fetch_array($resultUser, MYSQLI_ASSOC)) {
             $user = array();
-            $useSchedule = $this->getUserScheduleFromDb($rowUser, $begin, $end, $con);
+            $useSchedule = $this->getUserScheduleFromDb($rowUser, $begin, $end, $con, $dbM);
 
             $user['fullname'] = $rowUser['fullname'];
             $user['username'] = $rowUser['username'];
@@ -111,12 +111,12 @@ class OverviewGet
         return $scheduleIncDateRange;
     }
 
-    private function getUserScheduleFromDb($rowUser, $begin, $end, $con)
+    private function getUserScheduleFromDb($rowUser, $begin, $end, $con, DbHelper $dbM)
     {
 
         $sqlUserSchedule = "SELECT * FROM events WHERE user='" . $rowUser['username'] . "' AND eventDate >= '" . $begin->format("Y-m-d") . "' AND eventDate < '" . $end->format("Y-m-d") . "'";
 
-        $resultUseSchedule = mysqli_query($con, $sqlUserSchedule);
+        $resultUseSchedule = $dbM->execQuery($con, $sqlUserSchedule);
         $useSchedule = mysqli_fetch_all($resultUseSchedule, MYSQLI_ASSOC);
         return $useSchedule;
     }
@@ -146,27 +146,25 @@ class OverviewGet
      * @param $con
      * @return bool|mysqli_result
      */
-    private function getAllUsers($con, $offset)
+    private function getAllUsers($con,DbHelper $dbM,$offset)
     {
         $sqlUser = 'SELECT * FROM users LIMIT '.$offset. ',' . self::OVERVIEW_ROW_LIMIT . '';
-        $resultUser = mysqli_query($con, $sqlUser);
+        $resultUser =  $dbM->execQuery($con, $sqlUser);
         return $resultUser;
 
     }
 
-    private function getAllUsersInTeam($con, $team, $offset)
+    private function getAllUsersInTeam($con, DbHelper $dbM, $team, $offset)
     {
         $sqlUser = 'SELECT * FROM users WHERE team="' . $team . '"  LIMIT '.$offset. ',' . self::OVERVIEW_ROW_LIMIT . '';
-        $this->logger->debug($sqlUser, array(__FILE__, __LINE__));
-        $resultUser = mysqli_query($con, $sqlUser);
+        $resultUser =  $dbM->execQuery($con, $sqlUser);
         return $resultUser;
     }
 
-    private function getAllUsersBasedOnManager($con, $manager, $offset)
+    private function getAllUsersBasedOnManager($con,DbHelper $dbM, $manager, $offset)
     {
         $sqlUser = 'SELECT * FROM users WHERE manager="' . $manager . '"  LIMIT '.$offset. ',' . self::OVERVIEW_ROW_LIMIT . '';
-        $this->logger->add($sqlUser, array(__FILE__, __LINE__));
-        $resultUser = mysqli_query($con, $sqlUser);
+        $resultUser =  $dbM->execQuery($con, $sqlUser);
         return $resultUser;
     }
 

@@ -97,6 +97,13 @@ body {
     margin: 0 auto;
 }
 
+.left {
+    font-size: large;
+    padding: 10px;
+    text-align: center;
+    margin: 0 auto;
+}
+
 .ui-datepicker-week-end {
     display: none
 }
@@ -106,7 +113,7 @@ body {
     border-radius: 25px;
     border-style: solid;
     border-color: #aaaaaa;
-    width: 600px;
+    width: 800px;
     height: 370px;
 
     text-align: center;

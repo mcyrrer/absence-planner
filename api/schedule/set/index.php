@@ -7,7 +7,7 @@ new UserSession();
 
 $c = new ScheduleSet();
 
-$c->setUserSchedule($user);
+$c->setUserSchedule($_SESSION['user']);
 
 
 
