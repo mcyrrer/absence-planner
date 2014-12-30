@@ -4,6 +4,10 @@ use Underscore\Types\String;
 require_once BASEPATH.'/vendor/autoload.php';
 require_once BASEPATH.'/classes/autoloader.php';
 
+
+//TODO: all requests has none as type!? fix it
+//[2014-12-22 22:54:07] name.INFO: type is none but there is no record of this date in db so nothing will be done. (AlecDickinson 2014-12-08) ["C:\MyMagicFolder\SourceCode\Web\vacation\classes\ScheduleSet.php",126] []
+
 /**
  * Class to help out with common mysql tasks
  */
@@ -83,7 +87,13 @@ class ScheduleSet
             $end = $end->modify('+1 day');
 
             $interval = new DateInterval('P1D');
+            //TODO: DatePeriodDoesNot Work!!!!! Fix it
             $daterange = new DatePeriod($begin, $interval, $end);
+            if(count($daterange)==0)
+            {
+                self::$logger->addError('Date range has '. count($daterange). ' objects = no days', array(__FILE__, __LINE__));
+
+            }
 
             foreach ($daterange as $aDate) {
                 $this->insertOneDayToDb(self::$user, $aDate->format("Ymd"), $con, $state);
@@ -116,11 +126,11 @@ class ScheduleSet
 
         if (mysqli_num_rows($result) > 0) {
             $sql = $this->eventAlreadyExistInDb($user, $date, $state);
-        } elseif (String::is('none',$state) == 0) {
-            self::$logger->addDebug('type is none but there is no record of this date in db so nothing will be done. ('. $user . " " . $date.")", array(__FILE__, __LINE__));
+        } elseif (String::is('none',$state)) {
+            self::$logger->addInfo('type is none but there is no record of this date in db so nothing will be done. ('. $user . " " . $date.")", array(__FILE__, __LINE__));
             return;
         } else {
-            $sql = $this->insertEvent($user, $date, $state);
+            $sql = $this->getInsertEventSql($user, $date, $state);
         }
         $this->evaluateSqlResult($con, $sql);
     }
@@ -143,9 +153,8 @@ class ScheduleSet
      * @param $state
      * @return string
      */
-    private function updateEvent($user, $date, $state)
+    private function getUpdateEventSql($user, $date, $state)
     {
-        self::$logger->addDebug('Update of event for ' . $user . ' ' . $date. " to ". $state, array(__FILE__, __LINE__));
         $sql = "UPDATE events  SET type = '$state', approved=0 WHERE user = '$user' AND eventDate = '$date'";
         return $sql;
     }
@@ -156,7 +165,7 @@ class ScheduleSet
      * @param $state
      * @return string
      */
-    private function insertEvent($user, $date, $state)
+    private function getInsertEventSql($user, $date, $state)
     {
 
         $sql = "INSERT INTO events (type, user, eventDate) VALUES ('$state','$user','$date') ";
@@ -175,7 +184,7 @@ class ScheduleSet
             $sql = $this->deleteEvent($user, $date);
             return $sql;
         } else {
-            $sql = $this->updateEvent($user, $date, $state);
+            $sql = $this->getUpdateEventSql($user, $date, $state);
             return $sql;
         }
     }

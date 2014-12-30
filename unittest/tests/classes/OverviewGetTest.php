@@ -8,7 +8,7 @@
 
 require_once '../vendor/autoload.php';
 require_once '../settings.inc';
-require_once '../classes/OverviewGet.php';
+require_once '../classes/autoloader.php';
 require_once 'src/setupData.php';
 
 class OverviewGetTest extends PHPUnit_Framework_TestCase {

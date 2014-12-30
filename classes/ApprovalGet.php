@@ -58,12 +58,6 @@ class ApprovalGet
         return $allEvents;
     }
 
-//    public function getApprovalToDoUserList()
-//    {
-//
-//    }
-
-    //TODO: add api to approve/disapporve date,
 
  }
 

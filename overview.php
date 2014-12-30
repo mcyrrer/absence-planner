@@ -9,7 +9,6 @@ $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::W
 
 
 HtmlIncludes::header();
-//TODO: Take care if pagination of groupnext with team and manager
 ?>
 
     <script>
