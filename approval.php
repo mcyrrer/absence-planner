@@ -24,7 +24,7 @@ HtmlIncludes::header();
         </div>
         <div class="box">
 
-            <div class="center"><img src="pictures/loading.gif"></div>
+            <div class="center"><img src="pictures/loader_large.gif"></div>
         </div>
     </div>
 

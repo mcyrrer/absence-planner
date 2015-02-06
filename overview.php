@@ -33,6 +33,7 @@ HtmlIncludes::header();
                         fixedColumns: 3
                     });
                     $('#myTable01').fixedHeaderTable('show');
+                    hideLoader();
 
                 });
         });
@@ -69,6 +70,11 @@ HtmlIncludes::header();
             if (Object.keys(schedules).length > 0) {
                 $('#nextGroup').html("<span class='link' " + jsCodeNextGroup + "><img src='pictures/20-32.png'></span>");
             }
+            else
+            {
+                $('#nextGroup').html("<span class='link' " + jsCodeNextGroup + "><img src='pictures/transparent-32.png'></span>");
+
+            }
             if (parseInt(offsetCurrent) > 0) {
                 $('#prevGroup').html("<span class='link' " + jsCodePrevGroup + "><img src='pictures/9-32.png'></span>");
             }
@@ -86,7 +92,7 @@ HtmlIncludes::header();
                 html += '<td class="thItem">' + value['fullname'] + '</td>';
                 var jsCodeTeam = 'onClick="getTeamOverview(\'' + value['team'] + '\')";';
                 html += '<td class="thItem"><span class="link" ' + jsCodeTeam + '>' + value['team'] + '</span></td>';
-                var jsCodeManager = 'onClick="getManagerOverview(\'' + value['manager'] + '\')";';
+                var jsCodeManager = 'onClick="getManagerOverview(\'' + value['managerusername'] + '\')";';
                 html += '<td class="thItem"><span class="link" ' + jsCodeManager + '>' + value['manager'] + '</span></td>';
 
                 $.each(dates, function (index, day) {
@@ -132,8 +138,8 @@ HtmlIncludes::header();
 
         function getPrevPage(from, offset) {
 
-
-            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
+            showLoader();
+//            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
@@ -157,12 +163,14 @@ HtmlIncludes::header();
                         fixedColumns: 3
                     });
                     $('#myTable01').fixedHeaderTable('show');
+                    hideLoader();
 
                 });
         }
 
         function getNextPage(from, offset) {
-            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
+            showLoader();
+//            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
@@ -186,15 +194,30 @@ HtmlIncludes::header();
                         fixedColumns: 3
                     });
                     $('#myTable01').fixedHeaderTable('show');
+                    hideLoader();
 
                 });
+        }
+
+        function showLoader()
+        {
+            $("#loader").show();
+            $("#loader").html('<div class="center"><img class="imagecenter" src="pictures/loader_large.gif"></div>');
+        }
+
+        function hideLoader()
+        {
+            $("#loader").hide();
+
         }
 
         function getTeamOverview(team, offset) {
 
             typeOrRequest= "TEAM";
             typeData=team;
-            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
+            showLoader();
+
+//            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
@@ -217,6 +240,7 @@ HtmlIncludes::header();
                         fixedColumns: 3
                     });
                     $('#myTable01').fixedHeaderTable('show');
+                    hideLoader();
 
                 });
         }
@@ -224,7 +248,9 @@ HtmlIncludes::header();
         function getManagerOverview(manager, offset) {
             typeOrRequest= "MANAGER";
             typeData = manager;
-            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
+            showLoader();
+
+//            $("#tblr").html('<div class="center"><img src="pictures/loading.gif"></div>');
 
             $.ajax({
                 url: "api/overview/get/index.php?json",
@@ -247,6 +273,7 @@ HtmlIncludes::header();
                         fixedColumns: 3
                     });
                     $('#myTable01').fixedHeaderTable('show');
+                    hideLoader();
 
                 });
         }
@@ -262,13 +289,14 @@ HtmlIncludes::header();
 
             </div>
             <div id="tblr" class="grid_11 height800">
-                <div class="center"><img src="pictures/loading.gif"></div>
+
             </div>
             <div class="clear"></div>
         </div>
 
 
     </div>
+<div id="loader"><div class="center"><img class="imagecenter" src="pictures/loader_large.gif"></div></div>
 
 
 <?php

@@ -44,8 +44,11 @@ class ApprovalGet
         $so = new ScheduleObject();
 
 
-        $sql = "SELECT * FROM events events LEFT JOIN users users ON events.user = users.username WHERE users.manager='".$manager."' AND approved=0 ORDER BY events.eventDate ASC";
-        $result= mysqli_query($con,$sql);
+        $sql = "SELECT * FROM events events LEFT JOIN users users ON events.user = users.username WHERE users.manager='".$manager."' AND approved=0 ORDER BY events.eventDate ASC LIMIT 0,200";
+        $this->logger->addDebug("Get all approval ToDo that belong to manager",array(__FILE__,__LINE__));
+        $result=$dbM->execQuery($con,$sql);
+
+//        $result= mysqli_query($con,$sql);
         $resultArray = mysqli_fetch_all($result,MYSQLI_ASSOC);
         $allEvents = array();
         foreach($resultArray as $aEvent)

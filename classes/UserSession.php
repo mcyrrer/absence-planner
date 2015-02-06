@@ -6,7 +6,7 @@ require_once BASEPATH . '/classes/autoloader.php';
 class UserSession
 {
     static private $logger;
-
+    static private $sessionIdName = "VACATIONSESSIONID";
     function __construct()
     {
         self::$logger = (new Logging())->getLogger();
@@ -15,6 +15,7 @@ class UserSession
 
     private function userSessionStart()
     {
+        session_name(self::$sessionIdName);
         session_start();
 
         if (isset($_REQUEST['logout'])) {
@@ -22,6 +23,7 @@ class UserSession
                 echo "You have been logout<br>";
                 self::$logger->addInfo($_SESSION['user'] . ' logged out');
                 session_destroy();
+                session_name(self::$sessionIdName);
                 session_start();
             }
         }

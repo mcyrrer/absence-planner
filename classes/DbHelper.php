@@ -41,16 +41,12 @@ class DbHelper
         if ($result == false) {
             // @codeCoverageIgnoreStart
             $this->logger->addError('Error in sql: ' . $sql);
-        }
-        else
-        {
+        } else {
             if (SQL_PROFILING) {
-                if($result!=true) {
+                if ($result != false) {
                     $rows = mysqli_num_rows($result);
-                }
-                else
-                {
-                    $rows=0;
+                } else {
+                    $rows = 0;
                 }
                 $this->logger->addDebug("SQL [" . $sql . "] [rows:" . $rows . " " . mysqli_info($con) . "] [" . $timeTaken . "ms]", $callingInfo);
             }

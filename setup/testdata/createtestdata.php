@@ -1,12 +1,10 @@
 <?php
 require '../../vendor/autoload.php';
-require '../../classes/HtmlIncludes.php';
-require '../../classes/DbHelper.php';
-require '../../classes/DateHelper.php';
+require '../../classes/autoloader.php';
 require '../../settings.inc';
 
 $c = new createtestdata();
-$c->createTestData(100, 5000);
+$c->createTestData(5, 200);
 
 
 class createtestdata
@@ -42,7 +40,7 @@ class createtestdata
         $this->createManager($managecount,$faker);
         $this->createUsers($userCount, $managecount,$faker);
         $this->createTestEvents();
-        $this->createOneUser(9999, 'testuser', 'Surname Lastname', '', '1');
+        $this->createOneUser(200, 'testuser', 'Surname Lastname', '', '1');
 
     }
 
@@ -81,7 +79,7 @@ class createtestdata
 
             $name = $fName . ' ' . $lName . '(MANAGER)';
             $name = mysqli_real_escape_string($this->con,$name);
-            $this->createOneUser($i, $uName, $name, 'Mangers', '-');
+            $this->createOneUser($uName, $name, 'Mangers', '-');
 
             self::$managerArray[] = $uName;
 
@@ -108,6 +106,7 @@ class createtestdata
 
     private function createUsers($numberOfUses, $managecount, $faker)
     {
+        $teams = array("Alpha","Beta","Ceta","Deta","Eta","Fta","Gta");
 
         $managecount = $managecount + 1;
         for ($i = 0; $i <= $numberOfUses; $i++) {
@@ -117,22 +116,23 @@ class createtestdata
             $uName = $faker->uuid;
             $managerID = rand(0, count(self::$managerArray) - 1);
             $manager = self::$managerArray[$managerID];
-            $name = $fName . ' ' . $lName . '(' . $manager . ')';
+            $name = $fName . ' ' . $lName;
 
             $name = mysqli_real_escape_string($this->con,$name);
 
            // echo "Manager : " . $manager;
-            $team = "A-team";
+            $team=$teams[rand(0,count($teams)-1)];
+           // $team = "A-team";
             $id = $i + 100;
 
-            $this->createOneUser($id, $uName, $name, $team, $manager);
+            $this->createOneUser($uName, $name, $team, $manager);
             echo "Created user " . $name . "\n";
 
         }
 
     }
 
-    private function createOneUser($id, $username, $fullname, $team, $manager)
+    private function createOneUser($username, $fullname, $team, $manager)
     {
         $this->userNames[] = $username;
         $sql = "INSERT

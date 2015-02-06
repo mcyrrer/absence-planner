@@ -108,6 +108,32 @@ body {
     display: none
 }
 
+.imagecenter {
+    /*position: absolute;*/
+    left: 50%;
+    top: 50%;
+    margin: 20px 0 0 0px;
+}
+
+#loader {
+    width: 150px;
+    height: 150px;
+    background-color: #ffffff;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: auto;
+
+    border: 2px solid;
+    border-radius: 25px;
+    border-style: solid;
+    border-color: #aaaaaa;
+}
+
 .actionBox {
     border: 2px solid;
     border-radius: 25px;

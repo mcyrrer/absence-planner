@@ -1,5 +1,6 @@
 <?php
-session_start();
+//session_name('VACATIONSESSIONID');
+//session_start();
 
 define('DB_HOST', '127.0.0.1');
 define('DB_USER', 'root');

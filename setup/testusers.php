@@ -1,7 +1,7 @@
 <?php
 require_once '../classes/autoloader.php';
 require_once '../settings.inc';
-
+session_name('VACATIONSESSIONID');
 session_start();
 
 echo '<a href="../index.php">Back to index</a><br>';
@@ -11,6 +11,7 @@ $con = $dbm->connectToMainDb();
 if(isset($_REQUEST['user']))
 {
     session_destroy();
+    session_name('VACATIONSESSIONID');
     session_start();
     $_SESSION['user']=$_REQUEST['user'];
     if(strcmp("sifManager",$_REQUEST['user'])==0)

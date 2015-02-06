@@ -7,6 +7,7 @@ $(document).ready(function () {
         weekNumbers: true,
         handleWindowResize: true,
         aspectRatio: 4,
+        allDayDefault: true,
         events: 'api/schedule/get/index.php',
         dayClick: function (date, jsEvent, view) {
             eventClick(date, $(this));
@@ -27,7 +28,7 @@ $(document).ready(function () {
         }
 
         //var state = $('#type').val();
-        $("#loadingBatchCalendar").html('<div class="center"><img src="pictures/loading3.gif"></div>');
+        $("#loadingBatchCalendar").html('<div class="center"><img src="pictures/loader_small.gif"></div>');
 
         $.ajax({
             type: "POST",
@@ -92,7 +93,7 @@ function getApprovalToDo() {
 }
 
 function approvalSetAll(user, state) {
-    $(event.target).html('<img src="pictures/loading3.gif">');
+    $(event.target).html('<img src="pictures/loader_small.gif">');
     $.ajax({
         type: "POST",
         url: "api/approval/set/index.php",
@@ -108,6 +109,27 @@ function approvalSetAll(user, state) {
 }
 
 function eventClick(date, obj) {
+
+
+
+    var dateBgColour= 'rgba(0, 0, 0, 0)';
+    var switchOnChildBg = false;
+
+    $('#calendar').fullCalendar('clientEvents', function (event) {
+        if (event.start.format() === date.format()) {
+            //console.log(event.id + " has a child");
+            dateBgColour = event.backgroundColor;
+            switchOnChildBg =  true;
+        }
+    });
+
+    $('#calendar').fullCalendar('removeEvents', function (event) {
+        if (event.start.format() === date.format()) {
+           // console.log(event.id + " deleted");
+            return true;
+        }
+    });
+
     var vacation = 'red';
     var vacation_rgb = 'rgb(255, 0, 0)';
     var course = 'blue';
@@ -119,28 +141,54 @@ function eventClick(date, obj) {
     var none_rgb_transparent = 'transparent';
     var none_rgb_white = 'rgb(255, 255, 255)';
     var none_rgb_current_date = 'rgb(252, 248, 227)';
-    var rgb = obj.css('background-color');
     var state = "none";
+    if (switchOnChildBg == true)
+    {
+        var rgb =dateBgColour;
+    }
+    else
+    {
+        var rgb = obj.css('background-color');
+
+    }
+
     switch (rgb) {
         case none_rgb:
         case none_rgb_white:
         case none_rgb_current_date:
         case none_rgb_transparent:
-            obj.css('background-color', vacation);
+            var bgcolor = vacation;
             var state = "vacation";
             break;
+        case vacation:
         case vacation_rgb:
-            obj.css('background-color', course);
+            var bgcolor = course;
             var state = "course";
             break;
+        case course:
         case course_rgb:
-            obj.css('background-color', parental);
+            var bgcolor = parental;
             var state = "parental";
             break;
+        case parental:
         case parental_rgb:
-            obj.css('background-color', none);
+            var bgcolor = none;
             var state = "none";
             break;
+    }
+    //  obj.css('background-color', bgcolor);
+    var id = Math.random().toString();
+    if (state.indexOf("none") == -1) {
+        var event = {
+            id: id,
+            title: state,
+            start: date,
+            end: date,
+            allDay: true,
+            editable: false,
+            backgroundColor: bgcolor
+        };
+        $('#calendar').fullCalendar('renderEvent', event, true) // Add Event to fullCalendar
     }
     $.ajax({
         type: "POST",
@@ -151,7 +199,7 @@ function eventClick(date, obj) {
         },
         statusCode: {
             500: function () {
-                alert("Could not save data");
+                alert("Could not save data for date "+ date.format());
             }
         }
     });

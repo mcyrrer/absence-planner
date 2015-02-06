@@ -11,6 +11,7 @@ use Underscore\Types\String;
 class OverviewGet
 {
     private $logger;
+    private $managers;
 
     /*Overview page settings*/
     const DEFAULT_DATE_RANGE = 40;
@@ -90,8 +91,11 @@ class OverviewGet
         } elseif (String::is("MANAGER", $subOverviewKind)) {
             $resultUser = $this->getAllUsersBasedOnManager($con, $dbM, $subValue, $offset);
         } else {
-            $this->logger->addError("ERROR: wrong kind of subquery kind, should be one of ALL,TEAM,MANAGER buw was " . $subOverviewKind, array(__FILE__, __LINE__));
+            $this->logger->addError("ERROR: wrong kind of subquery kind, should be one of ALL,TEAM,MANAGER but was " . $subOverviewKind, array(__FILE__, __LINE__));
         }
+
+        $managers =  $this->getManagersFullName($con, $dbM);
+
         while ($rowUser = mysqli_fetch_array($resultUser, MYSQLI_ASSOC)) {
             $user = array();
             $useSchedule = $this->getUserScheduleFromDb($rowUser, $begin, $end, $con, $dbM);
@@ -99,7 +103,16 @@ class OverviewGet
             $user['fullname'] = $rowUser['fullname'];
             $user['username'] = $rowUser['username'];
             $user['team'] = $rowUser['team'];
-            $user['manager'] = $rowUser['manager'];
+
+            if(array_key_exists($rowUser['manager'],$managers))
+            {
+            $user['manager'] = $managers[$rowUser['manager']];
+            $user['managerusername'] = $rowUser['manager'];
+            }
+            else
+            {
+                $user['manager'] = 'None';
+            }
             $user['id'] = $rowUser['id'];
             $user['schedule'] = $this->iterateAllDaysInViewJson($daterange, $useSchedule);
             $userScheduleInformation[$user['fullname']] = $user;
@@ -110,6 +123,21 @@ class OverviewGet
 
         return $scheduleIncDateRange;
     }
+
+    private function getManagersFullName($con, DbHelper $dbM)
+    {
+        $returnArray = array();
+        $sql = "SELECT users.id, users.username as username, users.fullname as fullname, users.team, users.manager FROM users as users right join mangers as managers on users.username = managers.manager_user_id";
+        $resultUseSchedule = $dbM->execQuery($con, $sql);
+        $managersResult = mysqli_fetch_all($resultUseSchedule, MYSQLI_ASSOC);
+
+        foreach($managersResult as $aManager)
+        {
+            $returnArray[$aManager['username']]=$aManager['fullname'];
+        }
+        return $returnArray;
+    }
+
 
     private function getUserScheduleFromDb($rowUser, $begin, $end, $con, DbHelper $dbM)
     {
